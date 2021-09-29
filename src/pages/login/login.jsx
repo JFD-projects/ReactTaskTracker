@@ -4,28 +4,32 @@ import "./login.css"
 const Login = () => {
   return (
     <div className="text-center form-signin-containter">
-      <main class="form-signin">
+      <main className="form-signin">
         <form>
-          <h1 class="h3 mb-3 fw-normal">Вход</h1>
+          <h1 className="h3 mb-3 fw-normal">Вход</h1>
 
-          <div class="form-floating">
-            <input type="email" class="form-control" id="floatingInput" placeholder="Логин" />
-            <label for="floatingInput">Логин</label>
+          <div className="form-floating">
+            <input type="email" className="form-control" id="floatingInput" placeholder="Логин" />
+            <label htmlFor="floatingInput">Логин</label>
           </div>
-          <div class="form-floating">
-            <input type="password" class="form-control" id="floatingPassword" placeholder="Пароль" />
-            <label for="floatingPassword">Пароль</label>
+          <div className="form-floating">
+            <input type="password" className="form-control" id="floatingPassword" placeholder="Пароль" />
+            <label htmlFor="floatingPassword">Пароль</label>
           </div>
 
-          <div class="checkbox mb-3">
+          <div className="checkbox mb-3">
             <label>
               <input type="checkbox" value="remember-me" /> Запомнить меня
             </label>
           </div>
-          <button class="w-100 btn btn-lg btn-primary" type="submit">
-            Войти
-          </button>
-          <p class="mt-5 mb-3 text-muted">© 2021</p>
+          <div className="mb-3">
+            <button className="w-100 btn btn-lg btn-primary" type="submit">
+              Войти
+            </button>
+          </div>
+          <div className="mb-3">
+            <a href="/register"> Регистрация</a>
+          </div>
         </form>
       </main>
     </div>
