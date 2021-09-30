@@ -23,7 +23,9 @@ const Login = () => {
       .then((user) => {
         const auth = new Auth()
         auth.signin(user.name, user.token, remember)
-        history.replace("/")
+        setTimeout(() => {
+          history.replace("/")
+        })
       })
       .catch((error) => {
         setError(error)
