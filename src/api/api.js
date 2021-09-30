@@ -42,7 +42,18 @@ const Api = {
       setTimeout(() => {
         const index = Math.max(...tasks.map((item) => item.id)) + 1
         tasks = [...tasks, { id: index, text: text, title: title, columnId: columnId, active: 1 }]
-        console.log(tasks)
+        resolve(true)
+      }, 100)
+    })
+  },
+  updateTask: (id, data) => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        id = Number(id)
+        const findIndex = tasks.findIndex((item) => item.id === id)
+        if (findIndex !== undefined) {
+          tasks[findIndex] = { ...tasks[findIndex], ...data }
+        }
         resolve(true)
       }, 100)
     })

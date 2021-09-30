@@ -1,47 +1,97 @@
 import React, { useEffect, useState } from "react"
-import { useParams } from "react-router-dom"
+import { useParams, useHistory } from "react-router-dom"
 import Api from "../../api/api"
+import Loading from "../../components/loading/loading"
 
 const Task = ({ taskId }) => {
+  const history = useHistory()
+  const [columns, setColumns] = useState([])
   const [task, setTask] = useState()
   const params = useParams()
 
-  useEffect(() => {
-    Api.getTaskById(params.taskId).then((result) => {
-      setTask(result)
-      console.log("params.taskId", params.taskId)
-      console.log("result", result)
+  const loadColumns = () => {
+    Api.getColumns().then((result) => {
+      setColumns(result)
     })
-  }, [params.taskId])
+  }
 
-  if (!task) return "loading..."
+  const loadTask = (id) => {
+    Api.getTaskById(id).then((result) => {
+      setTask(result)
+    })
+  }
+
+  useEffect(() => {
+    loadColumns()
+    loadTask(params.taskId)
+  }, [])
+
+  const onSubmitHandler = (event) => {
+    event.preventDefault()
+    task.columnId = Number(task.columnId)
+    Api.updateTask(params.taskId, task)
+    history.replace("/tasks")
+  }
+
+  const editTaskHandler = (field) => {
+    return ({ target }) => {
+      setTask({ ...task, [field]: target.value })
+    }
+  }
+
   return (
     <>
-      <div className="container">
-        <form>
-          <fieldset disabled>
-            <legend>Disabled fieldset example</legend>
-            <div className="row g-3 align-items-center">
-              <div className="col-auto">
-                <label htmlFor="taskTitle" className="col-form-label">
+      <Loading hidden={task}></Loading>
+      {task && (
+        <div className="container">
+          <form onSubmit={onSubmitHandler}>
+            <fieldset>
+              <div className="mb-3">
+                <label htmlFor="taskStatus" className="form-label">
+                  Статус
+                </label>
+                <select
+                  className="form-select"
+                  aria-label="Default select example"
+                  value={task.columnId}
+                  onChange={editTaskHandler("columnId")}>
+                  {columns.map((column) => (
+                    <option key={column.id} value={column.id}>
+                      {column.title}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="mb-3">
+                <label htmlFor="taskTitle" className="form-label">
                   Заголовок
                 </label>
+                <input
+                  type="text"
+                  id="taskTitle"
+                  className="form-control"
+                  value={task.title}
+                  onChange={editTaskHandler("title")}
+                />
               </div>
-              <div className="col-auto">
-                <input type="text" id="taskTitle" className="form-control" value={task.title} />
+              <div className="mb-3">
+                <label htmlFor="taskDescription" className="form-label">
+                  Описание задачи
+                </label>
+                <textarea
+                  className="form-control"
+                  id="taskDescription"
+                  rows="3"
+                  value={task.text}
+                  onChange={editTaskHandler("text")}></textarea>
               </div>
-            </div>
-            <div className="mb-3">
-              <label for="taskDescription" className="form-label">
-                Описание задачи
-              </label>
-              <textarea className="form-control" id="taskDescription" rows="3">
-                {task.text}
-              </textarea>
-            </div>
-          </fieldset>
-        </form>
-      </div>
+              <button type="submit" className="btn btn-primary">
+                Сохранить
+              </button>
+            </fieldset>
+          </form>
+        </div>
+      )}
     </>
   )
 }
