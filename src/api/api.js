@@ -7,9 +7,33 @@ let columns = [
 ]
 
 let tasks = [
-  { id: 1, text: "Нужно срочно доделать проект", title: "Срочная задача", columnId: 1, active: 1 },
-  { id: 2, text: "Второй проект по-приколу сдлеать", title: "Вторая задача", columnId: 1, active: 1 },
-  { id: 3, text: "Пример готовой задчи", title: "Готовая задачка", columnId: 5, active: 1 },
+  {
+    id: 1,
+    text: "Нужно срочно доделать проект",
+    title: "Срочная задача",
+    columnId: 1,
+    active: 1,
+    responsible: "Иванов",
+    deadLine: "2022-01-01",
+  },
+  {
+    id: 2,
+    text: "Второй проект по-приколу сдлеать",
+    title: "Вторая задача",
+    columnId: 1,
+    active: 1,
+    responsible: "Иванов",
+    deadLine: "2022-01-01",
+  },
+  {
+    id: 3,
+    text: "Пример готовой задчи",
+    title: "Готовая задачка",
+    columnId: 5,
+    active: 1,
+    responsible: "Иванов",
+    deadLine: "2022-01-01",
+  },
 ]
 
 let users = [{ id: 1, login: "demo", password: "demo", token: "73y4287rt687r36", name: "DEMO" }]
@@ -37,11 +61,11 @@ const Api = {
       }, 100)
     })
   },
-  addTask: (title, text, columnId) => {
+  addTask: (data) => {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         const index = Math.max(...tasks.map((item) => item.id)) + 1
-        tasks = [...tasks, { id: index, text: text, title: title, columnId: columnId, active: 1 }]
+        tasks = [...tasks, { text: "", title: "", columnId: 1, active: 1, ...data, id: index }]
         resolve(true)
       }, 100)
     })
@@ -51,7 +75,7 @@ const Api = {
       setTimeout(() => {
         id = Number(id)
         const findIndex = tasks.findIndex((item) => item.id === id)
-        if (findIndex !== undefined) {
+        if (findIndex !== -1) {
           tasks[findIndex] = { ...tasks[findIndex], ...data }
         }
         resolve(true)

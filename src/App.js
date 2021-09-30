@@ -7,13 +7,12 @@ import "./App.css"
 import Login from "./pages/login/login"
 import Main from "./pages/main/main"
 import Register from "./pages/register/register"
-import NewTask from "./pages/tasks/new"
 import Task from "./pages/tasks/task"
 import Tasks from "./pages/tasks/tasks"
-
 import { BrowserRouter as Router } from "react-router-dom"
 import MainTemplate from "./templates/main/mainTemplate"
 import AuthTemplate from "./templates/auth/authTemplate"
+import TaskAdd from "./components/kanban/taskAdd"
 
 function App() {
   return (
@@ -23,7 +22,7 @@ function App() {
           <Route path="/" exact component={() => <MainTemplate content={Main} />} />
           <Route path="/login" component={() => <AuthTemplate content={Login} />} />
           <Route path="/register" component={() => <AuthTemplate content={Register} />} />
-          <Route path="/tasks/new/:columnId" component={() => <MainTemplate content={NewTask} />} />
+          <Route path="/tasks/add" component={() => <MainTemplate content={TaskAdd} />} />
           <Route path="/tasks/:taskId" component={(...rest) => <MainTemplate content={Task} {...rest} />} />
           <Route path="/tasks" component={() => <MainTemplate content={Tasks} />} />
         </Switch>

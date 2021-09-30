@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
-import Api from "../api/api"
+import Api from "../../api/api"
 import "./kanban.css"
 
 const Kanban = () => {
@@ -61,14 +61,9 @@ const Kanban = () => {
                   )
                 })}
                 <div className="d-grid  mt-2">
-                  <button
-                    type="button"
-                    className="btn btn-light"
-                    onClick={() => {
-                      addNewTaskHanldler(column.id)
-                    }}>
+                  <Link to={"/tasks/add?columnId=" + column.id} className="btn btn-light" type="button">
                     <i className="bi bi-plus-circle-dotted"></i>
-                  </button>
+                  </Link>
                 </div>
               </div>
             </div>
