@@ -12,6 +12,8 @@ let tasks = [
   { id: 3, text: "Пример готовой задчи", title: "Готовая задачка", columnId: 5, active: 1 },
 ]
 
+let users = [{ id: 1, login: "demo", password: "demo", token: "73y4287rt687r36", name: "DEMO" }]
+
 const Api = {
   getTasks: (userId) => {
     return new Promise((resolve, reject) => {
@@ -43,6 +45,18 @@ const Api = {
         console.log(tasks)
         resolve(true)
       }, 100)
+    })
+  },
+  login: (login, password) => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        const user = users.find((user) => user.login === login && user.password === password)
+        if (user) {
+          resolve(user)
+        } else {
+          reject("Пользователь не найден")
+        }
+      }, 1000)
     })
   },
 }
