@@ -1,7 +1,7 @@
 import React from "react"
 import Footer from "./footer"
 import Header from "./header"
-const LightTemplate = ({ content, children }) => {
+const AuthTemplate = ({ content, children }) => {
   return (
     <>
       <Header />
@@ -11,4 +11,4 @@ const LightTemplate = ({ content, children }) => {
   )
 }
 
-export default LightTemplate
+export default AuthTemplate

@@ -1,11 +1,11 @@
 import React from "react"
 import Footer from "./footer"
 import Header from "./header"
-const MainTemplate = ({ content, children }) => {
+const MainTemplate = ({ content, children, ...rest }) => {
   return (
     <>
       <Header />
-      {content ? content() : children}
+      {content ? content({ ...rest }) : children}
       <Footer />
     </>
   )

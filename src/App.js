@@ -13,7 +13,7 @@ import Tasks from "./pages/tasks/tasks"
 
 import { BrowserRouter as Router } from "react-router-dom"
 import MainTemplate from "./templates/main/mainTemplate"
-import LightTemplate from "./templates/light/lightTemplate"
+import AuthTemplate from "./templates/auth/authTemplate"
 
 function App() {
   return (
@@ -21,10 +21,10 @@ function App() {
       <Router>
         <Switch>
           <Route path="/" exact component={() => <MainTemplate content={Main} />} />
-          <Route path="/login" component={() => <LightTemplate content={Login} />} />
-          <Route path="/register" component={() => <LightTemplate content={Register} />} />
+          <Route path="/login" component={() => <AuthTemplate content={Login} />} />
+          <Route path="/register" component={() => <AuthTemplate content={Register} />} />
           <Route path="/tasks/new/:columnId" component={() => <MainTemplate content={NewTask} />} />
-          <Route path="/tasks/:taskId" component={() => <MainTemplate content={Task} />} />
+          <Route path="/tasks/:taskId" component={(...rest) => <MainTemplate content={Task} {...rest} />} />
           <Route path="/tasks" component={() => <MainTemplate content={Tasks} />} />
         </Switch>
       </Router>
