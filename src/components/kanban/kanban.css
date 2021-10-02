@@ -1,3 +1,32 @@
 .card-header {
-    border-bottom: 0;
+  border-bottom: 0;
+}
+
+[draggable] {
+  cursor: move; /* fallback if grab cursor is unsupported */
+  cursor: grab;
+  cursor: -moz-grab;
+  cursor: -webkit-grab;
+}
+
+/* (Optional) Apply a "closed-hand" cursor during drag operation. */
+[draggable]:active {
+  cursor: grabbing;
+  cursor: -moz-grabbing;
+  cursor: -webkit-grabbing;
+}
+
+.hold {
+  opacity: 0.3;
+}
+
+.droppable > div {
+  border: 1px solid transparent;
+  border-radius: 5px;
+}
+.droppable.active > div {
+  background: #eee;
+}
+.droppable.dragover > div {
+  border: 1px dashed #ccc;
 }
