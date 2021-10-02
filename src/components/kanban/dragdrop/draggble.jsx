@@ -5,18 +5,17 @@ const Draggble = ({ children, item, ...rest }) => {
   const [hold, setHold] = useState(false)
   const dragDropContext = useContext(DragDropContext)
 
-  const onDragStartHandle = (event) => {
+  const onDragStartHandle = () => {
     dragDropContext.setCurrentDragItem(item)
     setHold(true)
   }
 
-  const onDragEndHandle = (event) => {
+  const onDragEndHandle = () => {
     dragDropContext.setCurrentDragItem()
     setHold(false)
   }
 
-  let className = rest.className
-  className += hold ? " hold" : ""
+  let className = rest.className + hold ? " hold" : ""
 
   return (
     <div {...rest} draggable className={className} onDragStart={onDragStartHandle} onDragEnd={onDragEndHandle}>

@@ -12,7 +12,7 @@ import Tasks from "./pages/tasks/tasks"
 import { BrowserRouter as Router } from "react-router-dom"
 import MainTemplate from "./templates/main/mainTemplate"
 import AuthTemplate from "./templates/auth/authTemplate"
-import TaskAdd from "./components/kanban/taskAdd"
+import TaskAdd from "./components/forms/taskAdd"
 
 function App() {
   return (

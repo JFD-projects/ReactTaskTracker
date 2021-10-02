@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react"
-import { Link } from "react-router-dom"
 import Api from "../../api/api"
 import DragDrop from "./dragdrop/dragdrop"
 import Draggble from "./dragdrop/draggble"
 import Droppable from "./dragdrop/droppable"
+import TaskPanel from "./components/taskPanel"
+import ColumnHeader from "./components/columnHeader"
+import ColumnFooter from "./components/columnFooter"
 import "./kanban.css"
 
 const Kanban = () => {
@@ -30,6 +32,7 @@ const Kanban = () => {
     if (dropTaskId) {
       const findIndex = tasks.findIndex((task) => task.id === dropTaskId)
       if (findIndex !== -1) {
+        //Todo sent to api
         tasks[findIndex].columnId = newColumn
         setTasks([...tasks])
       }
@@ -49,34 +52,15 @@ const Kanban = () => {
             return (
               <Droppable key={column.id} onDrop={(taskId) => changeTask(taskId, column.id)} className="col">
                 <div className="pb-1 h-100">
-                  <div
-                    className="card-header"
-                    style={{ minWidth: 200 + "px", textAlign: "center", backgroundColor: column.color }}>
-                    {column.title}
-                  </div>
-                  <div>
-                    {getTasksByColumn(column.id).map((task) => {
-                      return (
-                        <Draggble
-                          item={task.id}
-                          key={task.id}
-                          className="card mt-2 mb-2"
-                          style={{ borderLeft: "3px solid " + column.color }}>
-                          <div className="card-header">
-                            <Link to={"/tasks/" + task.id}> {task.title}</Link>
-                          </div>
-                          <div className="card-body">
-                            <p className="card-text">{task.text}</p>
-                          </div>
-                        </Draggble>
-                      )
-                    })}
-                  </div>
-                  <div className="d-grid  mt-2">
-                    <Link to={"/tasks/add?columnId=" + column.id} className="btn btn-light" type="button">
-                      <i className="bi bi-plus-circle-dotted"></i>
-                    </Link>
-                  </div>
+                  <ColumnHeader column={column} />
+                  {getTasksByColumn(column.id).map((task) => {
+                    return (
+                      <Draggble item={task.id} key={task.id}>
+                        <TaskPanel task={task} column={column} />
+                      </Draggble>
+                    )
+                  })}
+                  <ColumnFooter column={column} />
                 </div>
               </Droppable>
             )

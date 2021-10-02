@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { useParams, useHistory } from "react-router-dom"
 import Api from "../../api/api"
-import Loading from "../../components/loading/loading"
+import Loading from "../loading/loading"
 import TaskForm from "./taskForm"
 
 const Task = ({ taskId }) => {
