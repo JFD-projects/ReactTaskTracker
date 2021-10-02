@@ -1,14 +1,17 @@
-import React, { useState } from "react"
+import React, { useState, useContext } from "react"
+import { DragDropContext } from "./dragdrop"
 
-const Draggble = ({ children, onStartDrag, onEndDrag, ...rest }) => {
+const Draggble = ({ children, item, ...rest }) => {
   const [hold, setHold] = useState(false)
+  const dragDropContext = useContext(DragDropContext)
+
   const onDragStartHandle = (event) => {
-    onStartDrag()
+    dragDropContext.setCurrentDragItem(item)
     setHold(true)
   }
 
   const onDragEndHandle = (event) => {
-    onEndDrag()
+    dragDropContext.setCurrentDragItem()
     setHold(false)
   }
 

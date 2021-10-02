@@ -1,8 +1,10 @@
-import React, { useState, useRef } from "react"
+import React, { useState, useRef, useContext } from "react"
+import { DragDropContext } from "./dragdrop"
 
-const Droppable = ({ children, onDrop, dragItem, ...rest }) => {
+const Droppable = ({ children, onDrop, ...rest }) => {
   const [dragover, setDragover] = useState(false)
   const element = useRef()
+  const dragDropContext = useContext(DragDropContext)
 
   const onDragOverHandler = (event) => {
     event.preventDefault()
@@ -10,24 +12,22 @@ const Droppable = ({ children, onDrop, dragItem, ...rest }) => {
 
   const onDragEnterHandler = (event) => {
     event.preventDefault()
-
     setDragover(true)
   }
 
   const onDragLeaveHandler = (event) => {
-    // console.log('relatedTarget', event.relatedTarget)
     if (!element.current.contains(event.relatedTarget)) {
-      console.log("setDragover")
       setDragover(false)
     }
   }
 
   const onDropHandler = (event) => {
-    onDrop()
+    onDrop(dragDropContext.currentDragItem)
+    dragDropContext.setCurrentDragItem()
     setDragover(false)
   }
 
-  let className = rest.className + " droppable" + (dragItem ? " active" : "")
+  let className = rest.className + " droppable" + (dragDropContext.currentDragItem ? " active" : "")
   className += dragover ? " dragover" : ""
   return (
     <div

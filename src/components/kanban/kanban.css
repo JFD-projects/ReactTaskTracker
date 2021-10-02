@@ -21,12 +21,12 @@
 }
 
 .droppable > div {
-  border: 1px solid transparent;
+  border: 2px solid transparent;
   border-radius: 5px;
 }
 .droppable.active > div {
   background: #eee;
 }
 .droppable.dragover > div {
-  border: 1px dashed #ccc;
+  border: 2px dashed #ccc;
 }
