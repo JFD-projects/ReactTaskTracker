@@ -20,7 +20,7 @@
   z-index: 2;
 }
 
-.form-signin input#login {
+.form-signin input#email {
   margin-bottom: -1px;
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0;

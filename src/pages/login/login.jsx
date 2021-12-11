@@ -1,96 +1,124 @@
-import React, { useState } from "react"
+import React, {useState} from "react"
 import Api from "../../api/api"
 import "./login.css"
 import Loading from "../../components/loading/loading"
 import Auth from "../../services/auth"
-import { useHistory } from "react-router-dom"
+import {useHistory} from "react-router-dom"
+import {useAuth} from "../../hooks/useAuth";
+import * as Yup from "yup"
+import {Formik, Field, Form} from "formik";
 
 const Login = () => {
-  const [login, setLogin] = useState("")
-  const [password, setPassword] = useState("")
-  const [remember, setRemeber] = useState(false)
-  const [error, setError] = useState("")
-  const [loading, setLoading] = useState(false)
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
+    const [remember, setRemeber] = useState(false)
+    const [errors, setErrors] = useState("")
+    const [loading, setLoading] = useState(false)
+    const {signIn} = useAuth()
 
-  const history = useHistory()
+    const history = useHistory()
 
-  const submitHandler = (event) => {
-    event.preventDefault()
+    const submitHandler = async (event) => {
+        event.preventDefault()
 
-    setError()
-    setLoading(true)
-    Api.login(login, password)
-      .then((user) => {
-        const auth = new Auth()
-        auth.signin(user.name, user.token, remember)
-        setTimeout(() => {
-          history.replace("/")
-        })
-      })
-      .catch((error) => {
-        setError(error)
-      })
-      .finally(() => {
-        setLoading(false)
-      })
-  }
+        setErrors()
+        setLoading(true)
 
-  return (
-    <div className="text-center form-signin-containter">
-      <Loading hidden={!loading} />
-      <main className="form-signin">
-        <form onSubmit={submitHandler}>
-          <h1 className="h3 mb-3 fw-normal">Вход</h1>
+        try {
+            await signIn({email, password})
+            history.push("/")
+        } catch (e) {
+            console.log(e)
+            setErrors(e.error)
+        } finally {
+            setLoading(false)
+        }
+    }
 
-          {error && (
-            <div className="alert alert-danger" role="alert">
-              {error}
-            </div>
-          )}
+    const signinSchema = Yup.object().shape({
+        email: Yup.string().required('Поле обязательное для заполнения'),
+        password: Yup.string().required('Поле обязательное для заполнения'),
+    });
 
-          <div className="form-floating">
-            <input
-              type="text"
-              className="form-control"
-              id="login"
-              placeholder="Логин"
-              value={login}
-              onChange={(event) => setLogin(event.target.value)}
-              required
-            />
-            <label htmlFor="login">Логин</label>
-          </div>
-          <div className="form-floating">
-            <input
-              type="password"
-              className="form-control"
-              id="floatingPassword"
-              placeholder="Пароль"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              required
-            />
-            <label htmlFor="floatingPassword">Пароль</label>
-          </div>
+    const onSubminHandler = async (values) => {
+        console.log(values)
+        setErrors()
+        /* setLoading(true)
+         try {
+           await signUp(values)
+           history.push("/")
+         } catch (e) {
+           setErrors(e.error)
+         } finally {
+           setLoading(false)
+         }*/
+    }
 
-          <div className="checkbox mb-3">
-            <label>
-              <input type="checkbox" value={remember} onChange={(event) => setRemeber(event.target.checked)} />{" "}
-              Запомнить меня
-            </label>
-          </div>
-          <div className="mb-3">
-            <button className="w-100 btn btn-lg btn-primary" type="submit">
-              Войти
-            </button>
-          </div>
-          <div className="mb-3">
-            <a href="/register"> Регистрация</a>
-          </div>
-        </form>
-      </main>
-    </div>
-  )
+    return (
+        <div className="text-center form-signin-containter">
+            <Loading hidden={!loading}/>
+            <main className="form-signin">
+                <Formik initialValues={{email: "", password: "", rememberMe: false}} onSubmit={onSubminHandler}
+                        validationSchema={signinSchema}>
+                    {({errors: formicErrors, touched}) => (
+                        <Form onSubmit={submitHandler}>
+                            <h1 className="h3 mb-3 fw-normal">Вход</h1>
+
+                            {errors && (
+                                <div className="alert alert-danger" role="alert">
+                                    {errors}
+                                </div>
+                            )}
+
+                            <div className="form-floating input-tooltip">
+                                <Field name="email" type="email" id="email"
+                                       className={"form-control " + (formicErrors.email && touched.email ? "is-invalid" : "")}
+                                       placeholder="email"/>
+                                {formicErrors.email && touched.email ? (
+                                    <div className="tooltiptext">{formicErrors.email}</div>
+                                ) : null}
+                                <label htmlFor="email">Email</label>
+                            </div>
+                            <div className="form-floating input-tooltip">
+                                <Field
+                                    name="password"
+                                    type="password"
+                                    className={"form-control " + (formicErrors.password && touched.password ? "is-invalid" : "")}
+                                    id="password"
+                                    placeholder="Пароль"
+                                />
+                                <label htmlFor="floatingPassword">Пароль</label>
+                                {formicErrors.password && touched.password ? (
+                                    <div className="tooltiptext">{formicErrors.password}</div>
+                                ) : null}
+                            </div>
+
+                            <div className="form-check form-check-inline mb-3">
+
+                                <Field
+                                    name="rememberMe"
+                                    type="checkbox"
+                                    className="form-check-input"
+                                    id="rememberMe"
+                                />
+                                <label htmlFor="rememberMe" className="form-check-label">
+                                    Запомнить меня
+                                </label>
+                            </div>
+                            <div className="mb-3">
+                                <button className="w-100 btn btn-lg btn-primary" type="submit">
+                                    Войти
+                                </button>
+                            </div>
+                            <div className="mb-3">
+                                <a href="/register"> Регистрация</a>
+                            </div>
+                        </Form>
+                    )}
+                </Formik>
+            </main>
+        </div>
+    )
 }
 
 export default Login

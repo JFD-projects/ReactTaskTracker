@@ -1,3 +1,79 @@
 body {
   background-color: #f5f5f5;
 }
+
+/* Tooltip text */
+.tooltiptext {
+  width: 300px;
+  min-height: 55px;
+  background-color: #e56975;
+  color: #fff;
+  text-align: center;
+  padding: 0 5px;
+  border-radius: 6px;
+
+  position: absolute;
+  z-index: 1;
+  top: 0px;
+  left: 105%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tooltiptext::after {
+  content: " ";
+  position: absolute;
+  top: 50%;
+  right: 100%; /* To the left of the tooltip */
+  margin-top: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent #e56975 transparent transparent;
+}
+
+
+.form-control.is-invalid {
+  background-color: #fcf5f6;
+  border: 1px solid #ced4da;
+}
+
+
+@media screen and (max-width: 900px) {
+  .tooltiptext {
+    width: 300px;
+    min-height: 55px;
+    background-color: #e56975;
+    color: #fff;
+    text-align: center;
+    padding: 0 5px;
+    border-radius: 6px;
+
+    position: absolute;
+    z-index: 1;
+    top: 60px;
+    left: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .tooltiptext::after {
+    content: " ";
+    position: absolute;
+    bottom: 100%;  /* At the top of the tooltip */
+    left: 50%;
+    margin-top: -38px;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent #e56975 transparent;
+  }
+  .input-tooltip input.is-invalid,
+  .input-tooltip input#email.is-invalid,
+  .input-tooltip input#password.is-invalid {
+    margin-bottom: 59px;
+  }
+}

@@ -13,11 +13,13 @@ import { BrowserRouter as Router } from "react-router-dom"
 import MainTemplate from "./templates/main/mainTemplate"
 import AuthTemplate from "./templates/auth/authTemplate"
 import TaskAdd from "./components/forms/taskAdd"
+import {AuthProvider} from "./hooks/useAuth";
 
 function App() {
   return (
     <>
       <Router>
+        <AuthProvider>
         <Switch>
           <Route path="/" exact component={() => <MainTemplate content={Main} />} />
           <Route path="/login" component={() => <AuthTemplate content={Login} />} />
@@ -26,6 +28,7 @@ function App() {
           <Route path="/tasks/:taskId" component={(...rest) => <MainTemplate content={Task} {...rest} />} />
           <Route path="/tasks" component={() => <MainTemplate content={Tasks} />} />
         </Switch>
+        </AuthProvider>
       </Router>
     </>
   )
