@@ -3,7 +3,7 @@ import PropTypes from "prop-types"
 import {toast} from "react-toastify"
 import axios from "axios"
 import userService from "../services/userService"
-import {setTokens} from "../services/localStorageService"
+import {setTokens, getRefreshToken, clearTokens} from "../services/localStorageService"
 
 const httpAuth = axios.create()
 const AuthContext = React.createContext()
@@ -19,6 +19,15 @@ export const AuthProvider = ({children}) => {
     const throwException = (message) => {
         const errorObject = {error: message}
         throw errorObject
+    }
+
+    const isAuth = () => {
+        return currentUser?._id ? true : false
+    }
+
+    const logOut = () => {
+        clearTokens()
+        setCurrentUser({})
     }
 
     const signUp = async ({email, password, ...rest}) => {
@@ -46,6 +55,29 @@ export const AuthProvider = ({children}) => {
         }
     }
 
+    const restoreAuth = async (refreshToken) => {
+        const url = `https://securetoken.googleapis.com/v1/token?key=${process.env.REACT_APP_FIREBASE_KEY}`
+        try {
+            const {data} = await httpAuth.post(url, {
+                grant_type: "refresh_token",
+                refresh_token: refreshToken
+            })
+            setTokens({refreshToken: data.refresh_token, idToken: data.id_token, expiresIn: data.expires_in})
+            const {user_id} = data
+            const {content} = await userService.get(user_id)
+            setCurrentUser(content)
+        } catch (e) {
+            errorCatcher(e)
+        }
+    }
+
+    useEffect(() => {
+        const refreshToken = getRefreshToken()
+        if (refreshToken) {
+            restoreAuth(refreshToken)
+        }
+    }, [])
+
     const prepareThrowError = (message) => {
         const errorObject = {
             error: message
@@ -62,6 +94,9 @@ export const AuthProvider = ({children}) => {
                 returnSecureToken: true
             })
             setTokens(data)
+            const {localId: user_id} = data
+            const {content} = await userService.get(user_id)
+            setCurrentUser(content)
         } catch (e) {
             errorCatcher(e)
             const {message} = e.response.data.error
@@ -86,7 +121,7 @@ export const AuthProvider = ({children}) => {
 
     const createUser = async (id, data) => {
         try {
-            const {content} = await userService.update(id, data)
+            const {content} = await userService.update(id, {...data, _id: id})
             setCurrentUser(content)
         } catch (e) {
             errorCatcher(e)
@@ -104,7 +139,7 @@ export const AuthProvider = ({children}) => {
     }
 
     return (
-        <AuthContext.Provider value={{signUp, signIn, currentUser}}>
+        <AuthContext.Provider value={{signUp, signIn, currentUser, isAuth, logOut}}>
             {children}
         </AuthContext.Provider>
     )

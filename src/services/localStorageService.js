@@ -21,6 +21,12 @@ export const getExpireDate = () => {
     return localStorage.getItem(EXPIRES_KEY)
 }
 
+export const clearTokens = () => {
+    localStorage.removeItem(TOKEN_KEY)
+    localStorage.removeItem(REFRESH_KEY)
+    localStorage.removeItem(EXPIRES_KEY)
+}
+
 const localStorageService = {
     setTokens,
     getAccessToken,

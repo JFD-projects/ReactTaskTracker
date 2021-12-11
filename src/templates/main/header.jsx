@@ -1,15 +1,13 @@
 import React, { useState } from "react"
 import { NavLink, useHistory } from "react-router-dom"
-import Auth from "../../services/auth"
+import {useAuth} from "../../hooks/useAuth";
 
 const Header = () => {
-  const auth = new Auth()
   const history = useHistory()
-  const [isAuthorized, setIsAuthorized] = useState(auth.isAuthorized())
+  const {isAuth, logOut} = useAuth()
 
   const logoutHandler = (event) => {
-    auth.signout()
-    setIsAuthorized(false)
+    logOut()
     history.replace("/")
   }
 
@@ -30,7 +28,7 @@ const Header = () => {
           <span className="navbar-toggler-icon"></span>
         </button>
         <div className="collapse navbar-collapse" id="navbarCollapse">
-          {isAuthorized && (
+          {isAuth() && (
             <>
               <ul className="navbar-nav me-auto mb-2 mb-md-0">
                 <li className="nav-item">
@@ -50,7 +48,7 @@ const Header = () => {
               </div>
             </>
           )}
-          {!isAuthorized && (
+          {!isAuth() && (
             <>
               <div className="navbar-nav me-auto mb-2 mb-md-0"></div>
               <div className="d-flex">

@@ -17,7 +17,9 @@ const Register = () => {
         setLoading(true)
         try {
             await signUp(values)
-            history.push("/")
+            setTimeout(() => {
+                history.push("/")
+            })
         } catch (e) {
             setErrors(e.error)
         } finally {
@@ -49,7 +51,8 @@ const Register = () => {
                                 </div>
                             )}
                             <div className="form-floating input-tooltip">
-                                <Field name="name" type="text" id="first_name" className={"form-control " + (formicErrors.name && touched.name ? "is-invalid" : "")}
+                                <Field name="name" type="text" id="first_name"
+                                       className={"form-control " + (formicErrors.name && touched.name ? "is-invalid" : "")}
                                        placeholder="Имя"/>
                                 <label htmlFor="first_name">Имя</label>
                                 {formicErrors.name && touched.name ? (
@@ -58,7 +61,8 @@ const Register = () => {
                             </div>
 
                             <div className="form-floating input-tooltip">
-                                <Field name="email" type="email" id="email" className={"form-control " + (formicErrors.email && touched.email ? "is-invalid" : "")}
+                                <Field name="email" type="email" id="email"
+                                       className={"form-control " + (formicErrors.email && touched.email ? "is-invalid" : "")}
                                        placeholder="email"/>
                                 <label htmlFor="email">Email</label>
                                 {formicErrors.email && touched.email ? (

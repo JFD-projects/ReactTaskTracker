@@ -18,40 +18,24 @@ const Login = () => {
 
     const history = useHistory()
 
-    const submitHandler = async (event) => {
-        event.preventDefault()
-
-        setErrors()
-        setLoading(true)
-
-        try {
-            await signIn({email, password})
-            history.push("/")
-        } catch (e) {
-            console.log(e)
-            setErrors(e.error)
-        } finally {
-            setLoading(false)
-        }
-    }
-
     const signinSchema = Yup.object().shape({
         email: Yup.string().required('Поле обязательное для заполнения'),
         password: Yup.string().required('Поле обязательное для заполнения'),
     });
 
     const onSubminHandler = async (values) => {
-        console.log(values)
         setErrors()
-        /* setLoading(true)
-         try {
-           await signUp(values)
-           history.push("/")
-         } catch (e) {
-           setErrors(e.error)
-         } finally {
-           setLoading(false)
-         }*/
+        setLoading(true)
+        try {
+            await signIn(values)
+            setTimeout(() => {
+                history.replace("/")
+            });
+        } catch (e) {
+            setErrors(e.error)
+        } finally {
+            setLoading(false)
+        }
     }
 
     return (
@@ -61,7 +45,7 @@ const Login = () => {
                 <Formik initialValues={{email: "", password: "", rememberMe: false}} onSubmit={onSubminHandler}
                         validationSchema={signinSchema}>
                     {({errors: formicErrors, touched}) => (
-                        <Form onSubmit={submitHandler}>
+                        <Form>
                             <h1 className="h3 mb-3 fw-normal">Вход</h1>
 
                             {errors && (
