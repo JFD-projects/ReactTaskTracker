@@ -1,4 +1,5 @@
 import httpService from "../../../graduation-project/src/services/httpService"
+import {objectToArray} from "../utils/converter";
 
 const columnEndPoint = "column/"
 
@@ -13,7 +14,7 @@ const columnService = {
     },
     fetchAll: async () => {
         const {data} = await httpService.get(columnEndPoint)
-        return data
+        return {...data, content: objectToArray(data.content).filter(item => item !== null)}
     },
     create: async (content) => {
         const {data} = await httpService.post(columnEndPoint, content)

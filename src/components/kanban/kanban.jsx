@@ -37,7 +37,6 @@ const Kanban = () => {
                 tasks[findIndex].columnId = newColumn
 
                 taskService.update(dropTaskId, tasks[findIndex]).then((data) => {
-                    console.log('data', data)
                 })
                 setTasks([...tasks])
             }

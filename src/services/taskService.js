@@ -1,5 +1,6 @@
 import httpService from "../../../graduation-project/src/services/httpService"
 import localStorageService from "./localStorageService";
+import {objectToArray} from "../utils/converter";
 
 const taskEndPoint = "task/"
 
@@ -19,7 +20,7 @@ const taskService = {
     },
     fetchAll: async () => {
         const { data } = await httpService.get(getEndPoint())
-        return data
+        return {...data, content: objectToArray(data.content)}
     },
     create: async (content) => {
         const { data } = await httpService.post(getEndPoint(), content)

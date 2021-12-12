@@ -1,5 +1,5 @@
 import httpService from "../../../graduation-project/src/services/httpService"
-import localStorageService from "./localStorageService";
+import {objectToArray} from "../utils/converter";
 
 const userEndPoint = "user/"
 
@@ -14,7 +14,7 @@ const userService = {
     },
     fetchAll: async () => {
         const { data } = await httpService.get(userEndPoint)
-        return data
+        return {...data, content: objectToArray(data.content)}
     },
     create: async (content) => {
         const { data } = await httpService.post(userEndPoint, content)

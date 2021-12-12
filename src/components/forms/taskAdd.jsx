@@ -22,24 +22,20 @@ const TaskAdd = () => {
     })
 
     useEffect(() => {
-        const loadColumns = () => {
-            columnService.fetchAll().then(({content: data}) => {
-                const arr = Object.keys(data).map((key) => data[key]).filter(item => item._id)
-                setColumns(arr)
-                if (arr.findIndex((item) => item._id === Number(task.columnId)) === -1) {
-                    setTask({...task, columnId: arr[0]?._id})
-                }
-            })
-        }
-        loadColumns()
-    }, [task])
+        columnService.fetchAll().then(({content: data}) => {
+            setColumns(data)
+        })
+    }, [])
 
-    const onSubmitHandler = (event) => {
+    useEffect(() => {
+        if (columns.findIndex((item) => item._id === String(task.columnId)) === -1) {
+            setTask((prevState) => ({...prevState, columnId: columns[0]?._id}))
+        }
+    }, [columns, task.columnId])
+
+    const onSubmitHandler = async (event) => {
         event.preventDefault()
-        console.log(task)
-        task.columnId = Number(task.columnId)
-        //Api.addTask(task)
-        taskService.create(task)
+        await taskService.create(task)
         history.replace("/tasks")
     }
 
