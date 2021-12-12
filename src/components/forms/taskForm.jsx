@@ -28,7 +28,7 @@ const TaskForm = ({ task, columns, editTaskHandler, onSubmitHandler }) => {
               value={task.columnId}
               onChange={editTaskHandler("columnId")}>
               {columns.map((column) => (
-                <option key={column.id} value={column.id}>
+                <option key={column._id} value={column._id}>
                   {column.title}
                 </option>
               ))}

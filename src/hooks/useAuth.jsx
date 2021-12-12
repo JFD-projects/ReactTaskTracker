@@ -42,41 +42,44 @@ export const AuthProvider = ({children}) => {
             await createUser(data.localId, {email, ...rest})
         } catch (e) {
             errorCatcher(e)
-            const {code, message} = e.response.data.error
+            const {message} = e.response.data.error
 
             switch (true) {
                 case message === "EMAIL_EXISTS":
                     throwException("Пользователь с таким email уже существует");
+                    break;
                 case message.startsWith('WEAK_PASSWORD'):
                     throwException("Пользователь с таким email уже существует");
+                    break;
                 default:
                     throwException(message);
             }
         }
     }
 
-    const restoreAuth = async (refreshToken) => {
-        const url = `https://securetoken.googleapis.com/v1/token?key=${process.env.REACT_APP_FIREBASE_KEY}`
-        try {
-            const {data} = await httpAuth.post(url, {
-                grant_type: "refresh_token",
-                refresh_token: refreshToken
-            })
-            setTokens({refreshToken: data.refresh_token, idToken: data.id_token, expiresIn: data.expires_in})
-            const {user_id} = data
-            const {content} = await userService.get(user_id)
-            setCurrentUser(content)
-        } catch (e) {
-            errorCatcher(e)
-        }
-    }
 
-    useEffect(() => {
-        const refreshToken = getRefreshToken()
+    const refreshToken = getRefreshToken()
+
+    useEffect( () => {
+        const restoreAuth = async (refreshToken) => {
+            const url = `https://securetoken.googleapis.com/v1/token?key=${process.env.REACT_APP_FIREBASE_KEY}`
+            try {
+                const {data} = await httpAuth.post(url, {
+                    grant_type: "refresh_token",
+                    refresh_token: refreshToken
+                })
+                setTokens({refreshToken: data.refresh_token, idToken: data.id_token, expiresIn: data.expires_in, userId: data.user_id})
+                const {user_id} = data
+                const {content} = await userService.get(user_id)
+                setCurrentUser(content)
+            } catch (e) {
+                errorCatcher(e)
+            }
+        }
         if (refreshToken) {
             restoreAuth(refreshToken)
         }
-    }, [])
+    }, [refreshToken])
 
     const prepareThrowError = (message) => {
         const errorObject = {

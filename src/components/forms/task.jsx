@@ -3,6 +3,7 @@ import { useParams, useHistory } from "react-router-dom"
 import Api from "../../api/api"
 import Loading from "../loading/loading"
 import TaskForm from "./taskForm"
+import columnService from "../../services/columnService";
 
 const Task = ({ taskId }) => {
   const history = useHistory()
@@ -11,21 +12,26 @@ const Task = ({ taskId }) => {
   const params = useParams()
 
   const loadColumns = () => {
-    Api.getColumns().then((result) => {
-      setColumns(result)
+    columnService.fetchAll().then(({content: data}) => {
+      const arr = Object.keys(data).map((key) => data[key]).filter(item => item._id)
+      setColumns(arr)
     })
   }
 
   const loadTask = (id) => {
-    Api.getTaskById(id).then((result) => {
+   /* Api.getTaskById(id).then((result) => {
       setTask(result)
+    })*/
+    columnService.get(id).then(({content: data}) => {
+      //const arr = Object.keys(data).map((key) => data[key]).filter(item => item._id)
+      setTask(data)
     })
   }
 
   useEffect(() => {
     loadColumns()
     loadTask(params.taskId)
-  }, [])
+  }, [params.taskId])
 
   const onSubmitHandler = (event) => {
     event.preventDefault()
