@@ -1,0 +1,27 @@
+[
+  {
+    "color": "#03a9f4",
+    "sort": 1,
+    "title": "Новые"
+  },
+  {
+    "color": "yellow",
+    "sort": 2,
+    "title": "Анализ"
+  },
+  {
+    "color": "red",
+    "sort": 3,
+    "title": "Разработка"
+  },
+  {
+    "color": "orange",
+    "sort": 4,
+    "title": "Тестирование"
+  },
+  {
+    "color": "green",
+    "sort": 5,
+    "title": "Готовые"
+  }
+]
