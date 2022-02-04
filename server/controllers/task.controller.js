@@ -37,7 +37,7 @@ exports.update = async function (req, res, next) {
     const user = req.userId;
     try {
         const prevTask = await Service.get(id);
-        if (prevTask.user.toString() !== user) return res.status(403).json({status: 403, message: 'Нет доступа'});
+        if (prevTask?.user?.toString() !== user) return res.status(403).json({status: 403, message: 'Нет доступа'});
         const task = await Service.update(id, req.body);
         return res.status(200).json({
             status: 200,

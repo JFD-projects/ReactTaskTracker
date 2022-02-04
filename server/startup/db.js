@@ -97,8 +97,12 @@ module.exports = function () {
         "error",
         console.error.bind(console, `${chalk.green("x")} connection error:`)
     );
+
     db.once("open", function () {
         debug(`MongoDB status: Connected ${chalk.green("✓")}`);
-        setInitialData();
+        if (process.env.MOCK === 'init') {
+            setInitialData();
+        }
     });
+
 };

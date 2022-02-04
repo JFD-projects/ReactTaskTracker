@@ -3,6 +3,6 @@
   "refreshTokenSecret": "some-secret-refresh-token-shit",
   "auth": true,
   "port": 4000,
-  "tokenLife": 900,
+  "tokenLife": 3600,
   "refreshTokenLife": 0
 }

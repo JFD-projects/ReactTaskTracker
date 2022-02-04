@@ -1,104 +1,118 @@
 const config = require("../config/config.json");
 const db = require("../models");
 const User = db.user;
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
+const TokenService = require("../services/token.service");
+const {validationResult} = require('express-validator')
 
-var jwt = require("jsonwebtoken");
-var bcrypt = require("bcryptjs");
-const tokenList = {}
-
-exports.signUp = (req, res) => {
-    const user = new User({
-        name: req.body.name,
-        email: req.body.email,
-        password: bcrypt.hashSync(req.body.password, 5),
-    });
-
-    user.save((err, user) => {
-        if (err) {
-            res.status(500).send({message: err});
-            return;
+exports.signUp = async (req, res) => {
+    try {
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            return res.status(400).json({
+                error: {
+                    message: 'INVALID_DATA',
+                    code: 400,
+                    errors: errors.array()
+                }
+            })
         }
-        delete user.password;
-        res.send({message: "User was registered successfully!", user});
-    });
+
+        const {name, email, password} = req.body;
+        const user = await User.create({
+            name,
+            email,
+            password: await bcrypt.hash(password, 12),
+        });
+
+        const tokens = TokenService.generate({_id: user._id});
+        await TokenService.save(user._id, tokens.refreshToken);
+        res.status(200).send({
+            id: user._id,
+            username: user.username,
+            email: user.email,
+            ...tokens
+        });
+    } catch (e) {
+        res.status(500).send({message: e.message});
+    }
 };
 
-exports.signIn = (req, res) => {
-    User.findOne({
-        email: req.body.email,
-    }).select('+password').exec((err, user) => {
-        if (err) {
-            res.status(500).send({message: err});
-            return;
-        }
-
+exports.signIn = async (req, res) => {
+    try {
+        const {email, password} = req.body;
+        const user = await User.findOne({email}).select('+password');
         if (!user) {
             return res.status(404).send({message: "User Not found."});
         }
 
-        var passwordIsValid = bcrypt.compareSync(
-            req.body.password,
-            user.password
-        );
-
+        const passwordIsValid = await bcrypt.compare(password, user.password)
         if (!passwordIsValid) {
             return res.status(401).send({
                 accessToken: null,
                 message: "Invalid Password!",
             });
         }
-
-        let token = jwt.sign({id: user.id}, config.secret, {expiresIn: config.tokenLife});
-        let refreshToken = jwt.sign({id: user.id}, config.refreshTokenSecret, {expiresIn: config.refreshTokenLife});
-        tokenList[refreshToken] = refreshToken
-
+        const tokens = TokenService.generate({_id: user._id});
+        await TokenService.save(user._id, tokens.refreshToken);
         res.status(200).send({
             id: user._id,
             username: user.username,
             email: user.email,
-            accessToken: token,
-            expiresIn: config.tokenLife,
-            refreshToken: refreshToken,
+            ...tokens
         });
-    });
-};
-
-exports.refreshToken = (req, res) => {
-    const refreshToken = req.body.refreshToken;
-    if (!refreshToken || !(refreshToken in tokenList)) {
-        return res.status(401).send({message: "RefreshToken unavailable"});
+    } catch (e) {
+        res.status(500).send({message: e.message});
     }
+};
 
-    User.findOne({
-        _id: req.userId,
-    }).exec((err, user) => {
-        if (err) {
-            res.status(500).send({message: err});
-            return;
+function isTokenInvalid(data, dbToken) {
+    return !data || !dbToken || data._id !== dbToken?.user?.toString()
+}
+
+exports.refreshToken = async (req, res) => {
+    try {
+        const {refreshToken} = req.body;
+
+        const data = await TokenService.validateRefresh(refreshToken)
+        const dbToken = await TokenService.findToken(refreshToken);
+
+        if (isTokenInvalid(data, dbToken)) {
+            return res.status(401).send({message: "Unauthorized"});
         }
+
+        const user = await User.findOne({_id: data._id});
+        console.log('user', user)
         if (!user) {
-            return res.status(404).send({message: "User Not found."});
+            return res.status(401).send({message: "Unauthorized"});
         }
 
-        let token = jwt.sign({id: user.id}, config.secret, {expiresIn: config.tokenLife});
+        const tokens = TokenService.generate({_id: user._id});
+        // await TokenService.save(user._id, tokens.refreshToken);
         res.status(200).send({
             id: user._id,
             username: user.username,
             email: user.email,
-            accessToken: token,
-            expiresIn: config.tokenLife,
-            refreshToken: refreshToken,
+            ...tokens,
+            refreshToken
         });
-
-    });
+    } catch (e) {
+        res.status(500).send({message: e.message});
+    }
 };
 
-exports.revokeToken = (req, res) => {
-    const refreshToken = req.body.refreshToken;
-    if (refreshToken && (refreshToken in tokenList)) {
-        delete tokenList[refreshToken];
-        res.status(200).send({});
-    } else {
-        return res.status(401).send({message: "RefreshToken unavailable"});
+exports.revokeToken = async (req, res) => {
+    try {
+        const {refreshToken} = req.body;
+        const token = await TokenService.findToken(refreshToken);
+        if (token) {
+            token.deleteOne();
+            res.status(200).send({message: "RefreshToken has been deleted"});
+        } else {
+            return res.status(401).send({message: "RefreshToken unavailable"});
+        }
+    } catch (e) {
+        res.status(500).send({message: e.message});
     }
 };
