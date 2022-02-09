@@ -8,10 +8,13 @@ import ColumnFooter from "./components/columnFooter"
 import "./kanban.css"
 import columnService from "../../services/columnService";
 import taskService from "../../services/taskService";
+import {Modal, ModalBody, ModalFooter, ModalHeader} from "../modal"
 
 const Kanban = () => {
     const [columns, setColumns] = useState([])
     const [tasks, setTasks] = useState([])
+    const [modalShow, setModalShow] = useState(false)
+    const [taskForDeletion, setTaskForDeletion] = useState({})
 
     const loadColumns = () => {
         columnService.fetchAll().then(({content: data}) => {
@@ -21,7 +24,7 @@ const Kanban = () => {
     }
 
     const loadTasks = () => {
-        taskService.fetchAll().then(({content: data})=> {
+        taskService.fetchAll().then(({content: data}) => {
             setTasks(data)
         })
     }
@@ -43,36 +46,64 @@ const Kanban = () => {
         }
     }
 
+    const showModalDeletingTask = (task) => {
+        setModalShow(true)
+        setTaskForDeletion(task)
+    }
+    const deleteTaskHandler = async () => {
+        const taskId = taskForDeletion?._id;
+        if (taskId) {
+            await taskService.delete(taskId)
+            setTasks(tasks.filter(task => task._id !== taskId))
+        }
+        setModalShow(false)
+        setTaskForDeletion({})
+    }
+    const modalCloseHandler = () => {
+        setModalShow(false)
+    }
+
     useEffect(() => {
         loadColumns()
         loadTasks()
     }, [])
 
     return (
-        <div className="container-fluid">
-            <div className="row align-items-stretch flex-nowrap overflow-auto">
-                <DragDrop>
-                    {columns.map((column) => {
-                        return (
-                            <Droppable key={column._id} onDrop={(taskId) => changeTask(taskId, column._id)}
-                                       className="col">
-                                <div className="pb-1 h-100">
-                                    <ColumnHeader column={column}/>
-                                    {getTasksByColumn(column._id).map((task) => {
-                                        return (
-                                            <Draggble item={task._id} key={task._id}>
-                                                <TaskPanel task={task} column={column}/>
-                                            </Draggble>
-                                        )
-                                    })}
-                                    <ColumnFooter column={column}/>
-                                </div>
-                            </Droppable>
-                        )
-                    })}
-                </DragDrop>
+        <>
+            <div className="container-fluid">
+                <div className="row align-items-stretch flex-nowrap overflow-auto">
+                    <DragDrop>
+                        {columns.map((column) => {
+                            return (
+                                <Droppable key={column._id} onDrop={(taskId) => changeTask(taskId, column._id)}
+                                           className="col">
+                                    <div className="pb-1 h-100">
+                                        <ColumnHeader column={column}/>
+                                        {getTasksByColumn(column._id).map((task) => {
+                                            return (
+                                                <Draggble item={task._id} key={task._id}>
+                                                    <TaskPanel task={task} column={column}
+                                                               onDelete={showModalDeletingTask}/>
+                                                </Draggble>
+                                            )
+                                        })}
+                                        <ColumnFooter column={column}/>
+                                    </div>
+                                </Droppable>
+                            )
+                        })}
+                    </DragDrop>
+                </div>
             </div>
-        </div>
+            <Modal show={modalShow} onClose={modalCloseHandler}>
+                <ModalHeader>Удаление задачи</ModalHeader>
+                <ModalBody>Вы действительно хотите удалить задачу "{taskForDeletion?.title}"?</ModalBody>
+                <ModalFooter>
+                    <button type="button" className="btn btn-danger" onClick={deleteTaskHandler}>Удалить</button>
+                    <button type="button" className="btn btn-primary" onClick={modalCloseHandler}>Отмена</button>
+                </ModalFooter>
+            </Modal>
+        </>
     )
 }
 

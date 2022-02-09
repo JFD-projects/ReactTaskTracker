@@ -11,7 +11,6 @@ const usersMock = require("../mockData/users.json");
 const e = require("express");
 
 const generateSimpleEntity = async (data, model) => {
-    await model.collection.drop();
     return Promise.all(
         data.map(async (example) => {
             try {
@@ -31,17 +30,21 @@ const generateSimpleEntity = async (data, model) => {
         })
     );
 };
-// const generateUsers=(data,model)=>{
 
-// }
 const findUser = (email, users) => {
+    console.log('email', email)
     return users.find((row) => row.email === email)._id;
 };
 const findColumn = (title, columns) => {
     return columns.find((row) => row.title === title)._id;
 };
 
+const clearCollection = async (Model) => {
+    return await Model.collection.drop()
+}
+
 async function setInitialData() {
+    await clearCollection(models.column)
     const columnsData = await generateSimpleEntity(
         columnsMock,
         models.column
@@ -52,6 +55,7 @@ async function setInitialData() {
         debug(`Columns error ${chalk.red("x")}`);
     }
 
+    await clearCollection(models.user)
     const salt = await bcrypt.genSalt(5);
     const users = await Promise.all(usersMock.map(async obj => ({
         ...obj, password: await bcrypt.hash(obj.password, salt)
@@ -67,6 +71,7 @@ async function setInitialData() {
         debug(`Users error ${chalk.red("x")}`);
     }
 
+    await clearCollection(models.task)
     const tasks = await Promise.all(
         tasksMock.map(async (taskData) => {
             try {
@@ -86,6 +91,8 @@ async function setInitialData() {
     } else {
         debug(`Tasks error ${chalk.green("x")}`);
     }
+
+    await clearCollection(models.token)
 }
 
 module.exports = function () {

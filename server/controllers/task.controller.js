@@ -6,6 +6,7 @@ exports.getList = async function (req, res, next) {
     let page = req.params.page ? req.params.page : 1;
     let limit = req.params.limit ? req.params.limit : 10;
     const user = req.userId;
+    console.log(user);
     try {
         var tasks = await Service.getList({user}, page, limit);
         return res.status(200).json({
@@ -65,6 +66,7 @@ exports.delete = async function (req, res, next) {
     const user = req.userId;
     try {
         const prevTask = await Service.get(id);
+        console.log('prevTask', prevTask)
         if (prevTask.user.toString() !== user) return res.status(403).json({status: 403, message: 'Нет доступа'});
         const task = await Service.delete(id);
         return res.status(200).json({
