@@ -4,6 +4,7 @@ import {Formik, Field, Form} from "formik"
 import * as Yup from 'yup';
 import {useDispatch, useSelector} from "react-redux";
 import {getAuthError, signUp} from "../../store/user";
+import {Link} from "react-router-dom";
 
 const Register = () => {
     const errors = useSelector(getAuthError())
@@ -73,7 +74,7 @@ const Register = () => {
                                 </button>
                             </div>
                             <div className="mb-3">
-                                <a href="/login"> Авторизация</a>
+                                <Link to={"/login"}>Авторизация</Link>
                             </div>
                         </Form>)}
                 </Formik>

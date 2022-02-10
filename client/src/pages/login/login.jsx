@@ -4,6 +4,7 @@ import * as Yup from "yup"
 import {Formik, Field, Form} from "formik";
 import {useDispatch, useSelector} from "react-redux";
 import {getAuthError, login} from "../../store/user";
+import {Link} from "react-router-dom";
 
 const Login = () => {
     const dispatch = useDispatch()
@@ -74,7 +75,7 @@ const Login = () => {
                                 </button>
                             </div>
                             <div className="mb-3">
-                                <a href="/register"> Регистрация</a>
+                                <Link to={"/register"}>Регистрация</Link>
                             </div>
                         </Form>
                     )}
