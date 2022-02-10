@@ -1,51 +1,33 @@
-import React, { useEffect, useState } from "react"
-import { useParams, useHistory } from "react-router-dom"
-import Loading from "../loading/loading"
+import React, {useState} from "react"
+import {useParams, useHistory} from "react-router-dom"
 import TaskForm from "./taskForm"
-import columnService from "../../services/columnService";
-import taskService from "../../services/taskService";
+import {useDispatch, useSelector} from "react-redux";
+import {getColumns} from "../../store/columns";
+import {getTaskById, updateTask} from "../../store/tasks";
 
 const Task = () => {
-  const history = useHistory()
-  const [columns, setColumns] = useState([])
-  const [task, setTask] = useState()
-  const params = useParams()
+    const history = useHistory()
+    const dispatch = useDispatch()
+    const columns = useSelector(getColumns())
+    const params = useParams()
+    const task = useSelector(getTaskById(params.taskId))
+    const [editedTask, setEditedTask] = useState(task)
 
-  const loadColumns = () => {
-    columnService.fetchAll().then(({content: data}) => {
-      setColumns(data)
-    })
-  }
-
-  const loadTask = (id) => {
-    taskService.get(id).then(({content: data}) => {
-      setTask(data)
-    })
-  }
-
-  useEffect(() => {
-    loadColumns()
-    loadTask(params.taskId)
-  }, [params.taskId])
-
-  const onSubmitHandler = async (event) => {
-    event.preventDefault()
-    await taskService.update(params.taskId, task)
-    history.replace("/tasks")
-  }
-
-  const editTaskHandler = (field) => {
-    return ({ target }) => {
-      setTask({ ...task, [field]: target.value })
+    const onSubmitHandler = async (event) => {
+        event.preventDefault()
+        await dispatch(updateTask(editedTask))
+        history.replace("/tasks")
     }
-  }
 
-  return (
-    <>
-      <Loading hidden={task}></Loading>
-      {task && <TaskForm {...{ task, columns, editTaskHandler, onSubmitHandler }} />}
-    </>
-  )
+    const editTaskHandler = (field) => {
+        return ({target}) => setEditedTask({...editedTask, [field]: target.value})
+    }
+
+    return (
+        <>
+            {editedTask && <TaskForm {...{task: editedTask, columns, editTaskHandler, onSubmitHandler}} />}
+        </>
+    )
 }
 
 export default Task

@@ -54,7 +54,7 @@ exports.add = async function (req, res, next) {
         const task = await Service.add({...req.body, user: req.userId});
         return res.status(200).json({
             status: 200,
-            content: {task},
+            content: task,
             message: "Succesfully created",
         });
     } catch (e) {

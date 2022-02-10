@@ -9,7 +9,7 @@ const {signUpValidations} = require("../middleware/validators/auth");
 
 router.post("/signup", [verifySignUp.checkDuplicateEmail, ...signUpValidations], controller.signUp);
 router.post("/signin", controller.signIn);
-router.get("/logout", controller.revokeToken);
+router.post("/logout", controller.revokeToken);
 router.post("/refreshToken", [authJwt.verifyRefreshToken], controller.refreshToken);
 
 module.exports = router;

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react"
+import React, {useState} from "react"
 import DragDrop from "./dragdrop/dragdrop"
 import Draggble from "./dragdrop/draggble"
 import Droppable from "./dragdrop/droppable"
@@ -6,30 +6,19 @@ import TaskPanel from "./components/taskPanel"
 import ColumnHeader from "./components/columnHeader"
 import ColumnFooter from "./components/columnFooter"
 import "./kanban.css"
-import columnService from "../../services/columnService";
-import taskService from "../../services/taskService";
 import {Modal, ModalBody, ModalFooter, ModalHeader} from "../modal"
+import {useDispatch, useSelector} from "react-redux";
+import {getColumns} from "../../store/columns";
+import {deleteTask, getTasks, updateTask} from "../../store/tasks";
 
 const Kanban = () => {
-    const [columns, setColumns] = useState([])
-    const [tasks, setTasks] = useState([])
+    const dispatch = useDispatch()
+    const tasks = useSelector(getTasks())
+    const columns = useSelector(getColumns())
     const [modalShow, setModalShow] = useState(false)
     const [taskForDeletion, setTaskForDeletion] = useState({})
 
-    const loadColumns = () => {
-        columnService.fetchAll().then(({content: data}) => {
-            const arr = Object.keys(data).map((key) => data[key]).filter(item => item._id && item.title)
-            setColumns(arr)
-        })
-    }
-
-    const loadTasks = () => {
-        taskService.fetchAll().then(({content: data}) => {
-            setTasks(data)
-        })
-    }
-
-    const getTasksByColumn = (column) => {
+    const filterTasksByColumn = (column) => {
         return tasks.filter((task) => String(task.column) === String(column))
     }
 
@@ -37,11 +26,7 @@ const Kanban = () => {
         if (dropTaskId) {
             const findIndex = tasks.findIndex((task) => task._id === dropTaskId)
             if (findIndex !== -1) {
-                tasks[findIndex].column = newColumn
-
-                taskService.update(dropTaskId, tasks[findIndex]).then((data) => {
-                })
-                setTasks([...tasks])
+                dispatch(updateTask({...tasks[findIndex], column: newColumn}))
             }
         }
     }
@@ -53,8 +38,7 @@ const Kanban = () => {
     const deleteTaskHandler = async () => {
         const taskId = taskForDeletion?._id;
         if (taskId) {
-            await taskService.delete(taskId)
-            setTasks(tasks.filter(task => task._id !== taskId))
+            dispatch(deleteTask(taskId))
         }
         setModalShow(false)
         setTaskForDeletion({})
@@ -63,10 +47,7 @@ const Kanban = () => {
         setModalShow(false)
     }
 
-    useEffect(() => {
-        loadColumns()
-        loadTasks()
-    }, [])
+    if(!columns || !tasks) return "Loading..."
 
     return (
         <>
@@ -79,7 +60,7 @@ const Kanban = () => {
                                            className="col">
                                     <div className="pb-1 h-100">
                                         <ColumnHeader column={column}/>
-                                        {getTasksByColumn(column._id).map((task) => {
+                                        {filterTasksByColumn(column._id).map((task) => {
                                             return (
                                                 <Draggble item={task._id} key={task._id}>
                                                     <TaskPanel task={task} column={column}

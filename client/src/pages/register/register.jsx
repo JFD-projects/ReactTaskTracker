@@ -1,30 +1,16 @@
-import React, {useState} from "react"
+import React from "react"
 import "./register.css"
 import {Formik, Field, Form} from "formik"
-import {useHistory} from "react-router-dom"
-import Loading from "../../components/loading/loading"
-import {useAuth} from "../../hooks/useAuth";
 import * as Yup from 'yup';
+import {useDispatch, useSelector} from "react-redux";
+import {getAuthError, signUp} from "../../store/user";
 
 const Register = () => {
-    const history = useHistory()
-    const [loading, setLoading] = useState(false)
-    const [errors, setErrors] = useState("")
-    const {signUp} = useAuth()
+    const errors = useSelector(getAuthError())
+    const dispatch = useDispatch()
 
-    const onSubminHandler = async (values) => {
-        setErrors()
-        setLoading(true)
-        try {
-            await signUp(values)
-            setTimeout(() => {
-                history.push("/")
-            })
-        } catch (e) {
-            setErrors(e.error)
-        } finally {
-            setLoading(false)
-        }
+    const onSubmitHandler = async (values) => {
+        dispatch(signUp(values))
     }
 
     const signupSchema = Yup.object().shape({
@@ -33,14 +19,13 @@ const Register = () => {
             .max(50, 'Имя должно состоять максимум их 50-ти символов')
             .required('Поле обязательное для заполнения'),
         email: Yup.string().email('Некорректный email').max(255, 'Максимальная длинна email - 255 символов').required('Поле обязательное для заполнения'),
-        password: Yup.string().required('Поле обязательное для заполнения').min(6, 'Пароль должен состоять минимум из 6-ти символов'),
+        password: Yup.string().required('Поле обязательное для заполнения').min(8, 'Пароль должен состоять минимум из 8-ти символов'),
     });
 
     return (
         <div className="text-center form-signup-containter">
-            <Loading hidden={!loading}/>
             <main className="form-signup">
-                <Formik initialValues={{name: "", email: "", password: ""}} onSubmit={onSubminHandler}
+                <Formik initialValues={{name: "", email: "", password: ""}} onSubmit={onSubmitHandler}
                         validationSchema={signupSchema}>
                     {({errors: formicErrors, touched}) => (
                         <Form>

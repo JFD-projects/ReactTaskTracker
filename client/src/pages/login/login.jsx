@@ -1,17 +1,13 @@
-import React, {useState} from "react"
+import React from "react"
 import "./login.css"
-import Loading from "../../components/loading/loading"
-import {useHistory} from "react-router-dom"
-import {useAuth} from "../../hooks/useAuth";
 import * as Yup from "yup"
 import {Formik, Field, Form} from "formik";
+import {useDispatch, useSelector} from "react-redux";
+import {getAuthError, login} from "../../store/user";
 
 const Login = () => {
-    const [errors, setErrors] = useState("")
-    const [loading, setLoading] = useState(false)
-    const {signIn} = useAuth()
-
-    const history = useHistory()
+    const dispatch = useDispatch()
+    const errors = useSelector(getAuthError())
 
     const signInSchema = Yup.object().shape({
         email: Yup.string().required('Поле обязательное для заполнения'),
@@ -19,23 +15,11 @@ const Login = () => {
     });
 
     const onSubmitHandler = async (values) => {
-        setErrors()
-        setLoading(true)
-        try {
-            await signIn(values)
-            setTimeout(() => {
-                history.replace("/")
-            });
-        } catch (e) {
-            setErrors(e.error)
-        } finally {
-            setLoading(false)
-        }
+        dispatch(login(values))
     }
 
     return (
         <div className="text-center form-signin-containter">
-            <Loading hidden={!loading}/>
             <main className="form-signin">
                 <Formik initialValues={{email: "", password: "", rememberMe: false}} onSubmit={onSubmitHandler}
                         validationSchema={signInSchema}>

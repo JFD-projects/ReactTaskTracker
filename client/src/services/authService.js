@@ -30,5 +30,27 @@ const checkToken = async () => {
         return Promise.reject(e)
     }
 }
-const authService = {refreshToken, checkToken}
+const authService = {
+    checkToken,
+    register: async (payload) => {
+        const {data} = await httpAuth.post("auth/signup", payload)
+        return data
+    },
+    login: async (payload) => {
+        const {data} = await httpAuth.post("auth/signin", payload)
+        return data
+    },
+    logout: async () => {
+        const {data} = await httpAuth.post("auth/logout", {
+            refreshToken: localStorageService.getRefreshToken()
+        })
+        return data
+    },
+    refresh: async () => {
+        const { data } = await httpAuth.post("auth/refreshToken", {
+            refreshToken: localStorageService.getRefreshToken()
+        })
+        return data
+    }
+}
 export default authService
