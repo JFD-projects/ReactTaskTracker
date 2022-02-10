@@ -1,0 +1,8 @@
+.main_panel {
+    transition-property: background-color, box-shadow;
+    transition-duration: 1s;
+}
+
+.gray_panel {
+    background-color: white;
+}

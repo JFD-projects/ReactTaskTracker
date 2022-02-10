@@ -1,26 +1,26 @@
 [
   {
-    "color": "#03a9f4",
+    "color": "lightskyblue",
     "sort": 1,
     "title": "Новые"
   },
   {
-    "color": "yellow",
+    "color": "lightyellow",
     "sort": 2,
     "title": "Анализ"
   },
   {
-    "color": "red",
+    "color": "lightsalmon",
     "sort": 3,
     "title": "Разработка"
   },
   {
-    "color": "orange",
+    "color": "lightgrey",
     "sort": 4,
     "title": "Тестирование"
   },
   {
-    "color": "green",
+    "color": "lightgreen",
     "sort": 5,
     "title": "Готовые"
   }

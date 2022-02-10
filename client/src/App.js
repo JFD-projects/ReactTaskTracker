@@ -17,11 +17,15 @@ import 'react-toastify/dist/ReactToastify.css';
 import AppLoader from "./components/hoc/appLoader";
 import history from "./utils/history"
 import ProtectedRoute from "./components/hoc/protectedRoute";
+import video from "./assets/video/video.mp4";
 
 
 function App() {
     return (
         <>
+            <video autoPlay muted loop id="mainVideoBackground">
+                <source src={video} type="video/mp4"/>
+            </video>
             <Router history={history}>
                 <AppLoader>
                     <Switch>
@@ -29,10 +33,12 @@ function App() {
                         <Route path="/login" component={() => <AuthTemplate content={Login}/>}/>
                         <Route path="/register" component={() => <AuthTemplate content={Register}/>}/>
                         <ProtectedRoute>
+                            <Switch>
                             <Route path="/tasks/add" component={() => <MainTemplate content={TaskAdd}/>}/>
                             <Route path="/tasks/:taskId"
                                    component={(...rest) => <MainTemplate content={Task} {...rest} />}/>
                             <Route path="/tasks" component={() => <MainTemplate content={Tasks}/>}/>
+                            </Switch>
                         </ProtectedRoute>
                     </Switch>
                 </AppLoader>
