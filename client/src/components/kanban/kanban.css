@@ -1,32 +1,50 @@
 .card-header {
-  border-bottom: 0;
+    border-bottom: 0;
 }
 
 [draggable] {
-  cursor: move; /* fallback if grab cursor is unsupported */
-  cursor: grab;
-  cursor: -moz-grab;
-  cursor: -webkit-grab;
+    cursor: move; /* fallback if grab cursor is unsupported */
+    cursor: grab;
+    cursor: -moz-grab;
+    cursor: -webkit-grab;
 }
 
 /* (Optional) Apply a "closed-hand" cursor during drag operation. */
 [draggable]:active {
-  cursor: grabbing;
-  cursor: -moz-grabbing;
-  cursor: -webkit-grabbing;
+    cursor: grabbing;
+    cursor: -moz-grabbing;
+    cursor: -webkit-grabbing;
 }
 
 .hold {
-  opacity: 0.3;
+    opacity: 0.3;
+}
+
+.beforeOver {
+    border-top: 2px darkgray dashed;
+}
+
+.afterOver {
+    border-bottom: 2px darkgray dashed;
 }
 
 .droppable > div {
-  border: 2px solid transparent;
-  border-radius: 5px;
+    border: 2px solid transparent;
+    border-radius: 5px;
 }
+
 .droppable.active > div {
-  background: #eee;
+    background: #eee;
 }
+
 .droppable.dragover > div {
-  border: 2px dashed #ccc;
+    border: 2px dashed #ccc;
+}
+
+.delete_task_button {
+    color: darkgray;
+}
+
+.delete_task_button:hover {
+    color: black;
 }

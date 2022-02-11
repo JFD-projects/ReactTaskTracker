@@ -11,6 +11,7 @@ module.exports = model(
             text: { type: String},
             column: { type: ObjectIdType, ref: "Column" },
             user: { type: ObjectIdType, ref: "User" },
+            sort: { type: "Number", required: true },
         },
         { timestamps: true }
     )

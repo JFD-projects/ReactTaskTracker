@@ -1,4 +1,4 @@
-import React, {useState} from "react"
+import React, {useRef, useState} from "react"
 import DragDrop from "./dragdrop/dragdrop"
 import Draggble from "./dragdrop/draggble"
 import Droppable from "./dragdrop/droppable"
@@ -10,6 +10,7 @@ import {Modal, ModalBody, ModalFooter, ModalHeader} from "../modal"
 import {useDispatch, useSelector} from "react-redux";
 import {getColumns} from "../../store/columns";
 import {deleteTask, getTasks, updateTask} from "../../store/tasks";
+import NonEntityTaskPanel from "./components/nonEntityTaskPanel";
 
 const Kanban = () => {
     const dispatch = useDispatch()
@@ -22,11 +23,11 @@ const Kanban = () => {
         return tasks.filter((task) => String(task.column) === String(column))
     }
 
-    const changeTask = (dropTaskId, newColumn) => {
+    const changeTask = (dropTaskId, newColumn, nextTask, prevTask) => {
         if (dropTaskId) {
             const findIndex = tasks.findIndex((task) => task._id === dropTaskId)
             if (findIndex !== -1) {
-                dispatch(updateTask({...tasks[findIndex], column: newColumn}))
+                dispatch(updateTask({...tasks[findIndex], column: newColumn, nextTask, prevTask}))
             }
         }
     }
@@ -47,7 +48,9 @@ const Kanban = () => {
         setModalShow(false)
     }
 
-    if(!columns || !tasks) return "Loading..."
+    const onDropHandle = (columnId) => (taskId, nextTask, prevTask) => changeTask(taskId, columnId, nextTask, prevTask)
+
+    if (!columns || !tasks) return "Loading..."
 
     return (
         <>
@@ -56,16 +59,18 @@ const Kanban = () => {
                     <DragDrop>
                         {columns.map((column) => {
                             return (
-                                <Droppable key={column._id} onDrop={(taskId) => changeTask(taskId, column._id)}
+                                <Droppable key={column._id} onDrop={onDropHandle(column._id)}
                                            className="col">
                                     <div className="pb-1 h-100">
                                         <ColumnHeader column={column}/>
                                         {filterTasksByColumn(column._id).map((task) => {
-                                            return (
-                                                <Draggble item={task._id} key={task._id}>
-                                                    <TaskPanel task={task} column={column}
-                                                               onDelete={showModalDeletingTask}/>
-                                                </Draggble>
+                                            return (<div key={task._id}>
+                                                    <Draggble item={task._id} color={column.color}>
+                                                        <TaskPanel task={task} column={column}
+                                                                   onDelete={showModalDeletingTask}/>
+                                                    </Draggble>
+                                                </div>
+
                                             )
                                         })}
                                         <ColumnFooter column={column}/>

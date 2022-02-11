@@ -20,20 +20,21 @@ const tasksSlice = createSlice({
             state.error = action.payload
             state.isLoading = false
         },
-        taskUpdateRequested: (state) => {
+        tasksUpdateRequested: (state) => {
             state.isLoading = true
         },
-        taskUpdated: (state, action) => {
-            const task = action.payload
+        tasksUpdated: (state, action) => {
+            const tasks = action.payload
             state.entities = state.entities.map(item => {
-                if (item._id === task._id) {
-                    return task
+                const index = tasks.findIndex(task => item._id === task._id)
+                if (index !== -1) {
+                    return tasks[index]
                 }
                 return item
-            })
+            }).sort((a, b) => a.sort - b.sort)
             state.isLoading = false
         },
-        taskUpdateFiled: (state, action) => {
+        tasksUpdateFiled: (state, action) => {
             state.error = action.payload
             state.isLoading = false
         },
@@ -68,9 +69,9 @@ const {
     tasksRequested,
     tasksReceived,
     tasksRequestFiled,
-    taskUpdateRequested,
-    taskUpdated,
-    taskUpdateFiled,
+    tasksUpdateRequested,
+    tasksUpdated,
+    tasksUpdateFiled,
     taskDeleteRequested,
     taskDeleted,
     taskDeleteFiled,
@@ -92,13 +93,52 @@ export const loadTasksList = () => async (dispatch) => {
 export const getTasks = () => (state) => state.tasks.entities
 export const getTasksLoadingStatus = () => (state) =>
     state.tasks.isLoading
-export const updateTask = (payload) => async (dispatch) => {
-    dispatch(taskUpdateRequested())
+export const updateTask = (payload) => async (dispatch, getState) => {
+    dispatch(tasksUpdateRequested())
     try {
-        const {content} = await taskService.update(payload._id, payload)
-        dispatch(taskUpdated(content))
+        const column = payload.column
+        const prevColumn = getState().tasks.entities.find(item => item._id === payload._id)?.column
+        let tasks = getState().tasks.entities.filter(item => item.column === column && item._id !== payload._id)
+
+        if (payload.nextTask && payload.nextTask !== payload._id) {
+            const nextIndex = tasks.findIndex(item => item._id === payload.nextTask)
+            tasks = [
+                ...tasks.slice(0, nextIndex + 1),
+                payload,
+                ...tasks.slice(nextIndex + 1)
+            ].map((item, index) => {
+                return {...item, sort: index}
+            })
+        } else if (payload.prevTask && payload.prevTask !== payload._id) {
+            const prevIndex = tasks.findIndex(item => item._id === payload.prevTask)
+            tasks = [
+                ...tasks.slice(0, prevIndex),
+                payload,
+                ...tasks.slice(prevIndex)
+            ].map((item, index) => {
+                return {...item, sort: index}
+            })
+        } else {
+            let sort = payload.sort
+            if (prevColumn !== column) {
+                sort = tasks.reduce((sum, item) => {
+                    if (item.sort >= sum) return item.sort + 1
+                }, 0)
+            }
+            tasks = [
+                ...tasks,
+                {...payload, sort}
+            ]
+        }
+
+        const result = await Promise.all(tasks.map(async (task) => {
+            const {content} = await taskService.update(task._id, task)
+            return content;
+        }))
+        dispatch(tasksUpdated(result))
+
     } catch (error) {
-        dispatch(taskUpdateFiled(error.message))
+        dispatch(tasksUpdateFiled(error.message))
     }
 }
 
@@ -112,9 +152,15 @@ export const deleteTask = (taskId) => async (dispatch) => {
     }
 }
 
-export const createTask = (task) => async (dispatch) => {
+export const createTask = (task) => async (dispatch, getState) => {
     dispatch(taskCreateRequested())
     try {
+        // Определяем сортировку по колонке в которую добавляем задачу
+        const column = task.column
+        const sort = getState().tasks.entities.filter(item => item.column === column).reduce((sum, item) => {
+            if (item.sort >= sum) return item.sort + 1
+        }, 0)
+        task.sort = sort
         const {content} = await taskService.create(task)
         dispatch(taskCreated(content))
     } catch (error) {

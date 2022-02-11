@@ -1,10 +1,20 @@
-import React, { useState } from "react"
+import React, {useEffect, useState} from "react"
 
 export const DragDropContext = React.createContext()
 
-const DragDrop = ({ children }) => {
-  const [currentDragItem, setCurrentDragItem] = useState()
-  return <DragDropContext.Provider value={{ currentDragItem, setCurrentDragItem }}>{children}</DragDropContext.Provider>
+const DragDrop = ({children}) => {
+    const [currentDragItem, setCurrentDragItem] = useState()
+    const [prevDropItem, setPrevDropItem] = useState()
+    const [nextDropItem, setNextDropItem] = useState()
+
+    return <DragDropContext.Provider value={{
+        currentDragItem,
+        setCurrentDragItem,
+        prevDropItem,
+        setPrevDropItem,
+        nextDropItem,
+        setNextDropItem
+    }}>{children}</DragDropContext.Provider>
 }
 
 export default DragDrop

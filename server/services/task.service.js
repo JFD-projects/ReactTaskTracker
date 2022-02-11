@@ -42,7 +42,7 @@ exports.delete = async function (id) {
 
 exports.getList = async function (query, page, limit) {
     try {
-        const data = await Model.find(query);
+        const data = await Model.find(query).sort('sort');
         return data;
     } catch (e) {
         // Log Errors
