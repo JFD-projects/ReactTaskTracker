@@ -1,7 +1,7 @@
 import React from "react"
 
 const Footer = () => {
-  return <p className="text-center text-muted">© 2021</p>
+  return <div className="text-center mt-auto py-2 text-muted">© Р. М. Сколотий, 2022</div>
 }
 
 export default Footer

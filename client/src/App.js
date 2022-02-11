@@ -27,21 +27,21 @@ function App() {
                 <source src={video} type="video/mp4"/>
             </video>
             <Router history={history}>
-                <AppLoader>
-                    <Switch>
-                        <Route path="/" exact component={() => <MainTemplate content={Main}/>}/>
-                        <Route path="/login" component={() => <AuthTemplate content={Login}/>}/>
-                        <Route path="/register" component={() => <AuthTemplate content={Register}/>}/>
-                        <ProtectedRoute>
+                <Switch>
+                    <Route path="/" exact component={() => <MainTemplate content={Main}/>}/>
+                    <Route path="/login" component={() => <AuthTemplate content={Login}/>}/>
+                    <Route path="/register" component={() => <AuthTemplate content={Register}/>}/>
+                    <ProtectedRoute>
+                        <AppLoader>
                             <Switch>
-                            <Route path="/tasks/add" component={() => <MainTemplate content={TaskAdd}/>}/>
-                            <Route path="/tasks/:taskId"
-                                   component={(...rest) => <MainTemplate content={Task} {...rest} />}/>
-                            <Route path="/tasks" component={() => <MainTemplate content={Tasks}/>}/>
+                                <Route path="/tasks/add" component={() => <MainTemplate content={TaskAdd}/>}/>
+                                <Route path="/tasks/:taskId"
+                                       component={(...rest) => <MainTemplate content={Task} {...rest} />}/>
+                                <Route path="/tasks" component={() => <MainTemplate content={Tasks}/>}/>
                             </Switch>
-                        </ProtectedRoute>
-                    </Switch>
-                </AppLoader>
+                        </AppLoader>
+                    </ProtectedRoute>
+                </Switch>
             </Router>
             <ToastContainer/>
         </>

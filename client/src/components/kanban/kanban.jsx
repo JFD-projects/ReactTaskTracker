@@ -11,6 +11,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {getColumns} from "../../store/columns";
 import {deleteTask, getTasks, updateTask} from "../../store/tasks";
 import NonEntityTaskPanel from "./components/nonEntityTaskPanel";
+import Loading from "../loading/loading";
 
 const Kanban = () => {
     const dispatch = useDispatch()
@@ -50,7 +51,7 @@ const Kanban = () => {
 
     const onDropHandle = (columnId) => (taskId, nextTask, prevTask) => changeTask(taskId, columnId, nextTask, prevTask)
 
-    if (!columns || !tasks) return "Loading..."
+    if (!columns || !tasks) return <Loading></Loading>
 
     return (
         <>

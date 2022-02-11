@@ -47,6 +47,11 @@ const Draggble = ({children, item, ...rest}) => {
         }
     }
 
+    const onDropHandler = (event) => {
+        setShowNonEntityTaskBefore(false);
+        setShowNonEntityTaskAfter(false);
+    }
+
     let className = rest.className + (hold ? " hold" : "")
 
     return (
@@ -59,6 +64,7 @@ const Draggble = ({children, item, ...rest}) => {
             onDragEnd={onDragEndHandle}
             onDragEnter={onDragEnterHandle}
             onDragLeave={onDragLeaveHandler}
+            onDrop={onDropHandler}
         >
             {showNonEntityTaskBefore && !hold && <NonEntityTaskPanel color={rest.color}></NonEntityTaskPanel>}
             <div className={"pt-1 padding-top"}></div>

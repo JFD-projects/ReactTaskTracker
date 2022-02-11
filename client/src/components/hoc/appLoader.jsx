@@ -16,7 +16,7 @@ const AppLoader = ({children}) => {
             dispatch(loadTasksList())
         }
     }, [isLoggedIn])
-    if (isLoggedIn && (columnsIsLoading || tasksIsLoading)) return <Loading></Loading>
+    if (!isLoggedIn) return <Loading></Loading>
     return children
 }
 
