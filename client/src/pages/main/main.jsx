@@ -1,4 +1,4 @@
-import React, {useEffect} from "react"
+import React, {useEffect, useState} from "react"
 import {useArraySlider} from "../../hooks/useArraySlider";
 import img_spa from '../../assets/images/spa.jpg';
 import img_react from '../../assets/images/react.jpg';
@@ -9,11 +9,20 @@ import img_mongodb from '../../assets/images/mongodb.jpg';
 import img_express from '../../assets/images/express.jpg';
 import img_node from '../../assets/images/node.jpg';
 import './main.css'
+import randomImagesService from "../../services/randomImagesService";
 
 const Main = () => {
     const [value, start, stop] = useArraySlider(3000, ['spa', 'react', 'redux', 'bootstrap', 'rest', 'mongodb', 'express', 'node'])
+    const [randomCatImage, setRandomCatImage] = useState()
+    const [randomFoxImage, setRandomFoxImage] = useState()
     useEffect(() => {
         const index = start()
+        randomImagesService.getRandomCat().then(({data}) => {
+            setRandomCatImage(data.file)
+        })
+        randomImagesService.getRandomFox().then(({data}) => {
+            setRandomFoxImage(data.image)
+        })
         return () => stop(index);
     }, [])
 
@@ -111,6 +120,23 @@ const Main = () => {
                                 назначения. Node.js добавляет возможность JavaScript взаимодействовать с устройствами
                                 ввода-вывода через свой API, написанный на C++.</p>
                         </div>
+                    </div>
+                </div>
+                <h3 className="pb-2 border-bottom pt-4">Котики с лисичками (без них никуда):</h3>
+                <div className="row row-cols-2 py-4">
+                    <div className="col text-center">
+                        {!randomCatImage && <div className="spinner-border text-primary" role="status">
+                            <span className="visually-hidden">Loading...</span>
+                        </div>}
+                        {randomCatImage && <img src={randomCatImage} className="img-fluid border border-5 rounded-3"/>}
+                    </div>
+                    <div className="text-center">
+
+                        {!randomFoxImage && <div className="spinner-border text-primary" role="status">
+                            <span className="visually-hidden">Loading...</span>
+                        </div>}
+                        {randomFoxImage && <img src={randomFoxImage} className="img-fluid border border-5 rounded-3"/>}
+
                     </div>
                 </div>
             </div>
