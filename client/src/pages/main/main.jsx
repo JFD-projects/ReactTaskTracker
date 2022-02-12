@@ -24,6 +24,7 @@ const Main = () => {
   ])
   const [randomCatImage, setRandomCatImage] = useState()
   const [randomFoxImage, setRandomFoxImage] = useState()
+  const [randomDogImage, setRandomDogImage] = useState()
   useEffect(() => {
     const index = start()
     randomImagesService.getRandomCat().then(({ data }) => {
@@ -31,6 +32,9 @@ const Main = () => {
     })
     randomImagesService.getRandomFox().then(({ data }) => {
       setRandomFoxImage(data.image)
+    })
+    randomImagesService.getRandomDog().then(({ data }) => {
+      setRandomDogImage(data.url)
     })
     return () => stop(index)
   }, [])
@@ -221,9 +225,9 @@ const Main = () => {
           </div>
         </div>
         <h3 className="pb-2 border-bottom pt-4">
-          Котики с лисичками (без них никуда):
+          Котики, собачки и лисички (без них никуда):
         </h3>
-        <div className="row row-cols-2 py-4">
+        <div className="row row-cols-3 py-4">
           <div className="col text-center">
             {!randomCatImage && (
               <div className="spinner-border text-primary" role="status">
@@ -235,6 +239,20 @@ const Main = () => {
                 src={randomCatImage}
                 className="img-fluid border border-5 rounded-3"
                 alt="Котик"
+              />
+            )}
+          </div>
+          <div className="col text-center">
+            {!randomDogImage && (
+              <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
+            )}
+            {randomDogImage && (
+              <img
+                src={randomDogImage}
+                className="img-fluid border border-5 rounded-3"
+                alt="Собачка"
               />
             )}
           </div>

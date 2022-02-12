@@ -6,6 +6,9 @@ const randomImagesService = {
   },
   async getRandomFox() {
     return await axios.get('https://randomfox.ca/floof/')
+  },
+  async getRandomDog() {
+    return await axios.get('https://random.dog/woof.json')
   }
 }
 
