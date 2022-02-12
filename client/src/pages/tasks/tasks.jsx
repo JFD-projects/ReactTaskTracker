@@ -1,10 +1,8 @@
-import React from "react"
-import Kanban from "../../components/kanban/kanban"
+import React from 'react'
+import Kanban from '../../components/kanban/kanban'
 
 const Tasks = () => {
-  return (
-    <Kanban/>
-  )
+  return <Kanban />
 }
 
 export default Tasks
