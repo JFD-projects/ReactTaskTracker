@@ -11,7 +11,6 @@ import Task from "./pages/tasks/task"
 import Tasks from "./pages/tasks/tasks"
 import MainTemplate from "./templates/main/mainTemplate"
 import AuthTemplate from "./templates/auth/authTemplate"
-import TaskAdd from "./components/forms/taskAdd"
 import {ToastContainer} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import AppLoader from "./components/hoc/appLoader";
@@ -34,7 +33,7 @@ function App() {
                     <ProtectedRoute>
                         <AppLoader>
                             <Switch>
-                                <Route path="/tasks/add" component={() => <MainTemplate content={TaskAdd}/>}/>
+                                <Route path="/tasks/add" component={() => <MainTemplate content={Task}/>}/>
                                 <Route path="/tasks/:taskId"
                                        component={(...rest) => <MainTemplate content={Task} {...rest} />}/>
                                 <Route path="/tasks" component={() => <MainTemplate content={Tasks}/>}/>

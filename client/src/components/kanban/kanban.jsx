@@ -1,4 +1,4 @@
-import React, {useRef, useState} from "react"
+import React, {useState} from "react"
 import DragDrop from "./dragdrop/dragdrop"
 import Draggble from "./dragdrop/draggble"
 import Droppable from "./dragdrop/droppable"
@@ -10,7 +10,6 @@ import {Modal, ModalBody, ModalFooter, ModalHeader} from "../modal"
 import {useDispatch, useSelector} from "react-redux";
 import {getColumns} from "../../store/columns";
 import {deleteTask, getTasks, updateTask} from "../../store/tasks";
-import NonEntityTaskPanel from "./components/nonEntityTaskPanel";
 import Loading from "../loading/loading";
 
 const Kanban = () => {

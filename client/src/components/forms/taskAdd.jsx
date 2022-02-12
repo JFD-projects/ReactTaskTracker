@@ -1,6 +1,6 @@
-import React, {useState} from "react"
+import React from "react"
 import {useHistory, useLocation} from "react-router-dom"
-import Loading from "../loading/loading"
+
 import TaskForm from "./taskForm"
 import {useDispatch, useSelector} from "react-redux";
 import {getColumns} from "../../store/columns";
@@ -16,32 +16,20 @@ const TaskAdd = () => {
     const history = useHistory()
     const columns = useSelector(getColumns())
     const defaultColumn = query.get("column");
-    const [task, setTask] = useState({
+    const task = {
         text: "",
         title: "",
         responsible: "",
         deadLine: "",
         column: defaultColumn,
-    })
+    }
 
-    const onSubmitHandler = async (event) => {
-        event.preventDefault()
-        await dispatch(createTask(task))
+    const onSubmitHandler = async (data) => {
+        await dispatch(createTask(data))
         history.replace("/tasks")
     }
 
-    const editTaskHandler = (field) => {
-        return ({target}) => {
-            setTask({...task, [field]: target.value})
-        }
-    }
-
-    return (
-        <>
-            <Loading hidden={columns}></Loading>
-            {columns && <TaskForm {...{task, columns, editTaskHandler, onSubmitHandler}} />}
-        </>
-    )
+    return <TaskForm {...{task, columns, onSubmitHandler}} />
 }
 
 export default TaskAdd

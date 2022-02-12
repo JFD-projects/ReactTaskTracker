@@ -3,9 +3,6 @@ import {useState} from "react";
 export function useArraySlider(interval, array) {
     const [, setCurrentArrayIndex] = useState(0)
     const [value, setValue] = useState(array.at(0))
-    const getValue = () => {
-        return value
-    }
     const start = () => {
         const index = setInterval(() => {
             setCurrentArrayIndex(prevState => {

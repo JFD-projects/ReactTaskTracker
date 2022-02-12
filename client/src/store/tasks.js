@@ -123,6 +123,7 @@ export const updateTask = (payload) => async (dispatch, getState) => {
             if (prevColumn !== column) {
                 sort = tasks.reduce((sum, item) => {
                     if (item.sort >= sum) return item.sort + 1
+                    return sum
                 }, 0)
             }
             tasks = [
@@ -159,6 +160,7 @@ export const createTask = (task) => async (dispatch, getState) => {
         const column = task.column
         const sort = getState().tasks.entities.filter(item => item.column === column).reduce((sum, item) => {
             if (item.sort >= sum) return item.sort + 1
+            return sum
         }, 0)
         task.sort = sort
         const {content} = await taskService.create(task)
