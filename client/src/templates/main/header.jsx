@@ -1,7 +1,7 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { getIsLoggedIn, logOut } from '../../store/user'
+import { getIsAdmin, getIsLoggedIn, logOut } from '../../store/user'
 
 const Header = () => {
   const dispatch = useDispatch()
@@ -9,6 +9,7 @@ const Header = () => {
     dispatch(logOut())
   }
   const isLoggedIn = useSelector(getIsLoggedIn())
+  const isAdmin = useSelector(getIsAdmin())
 
   return (
     <nav className="navbar navbar-expand-md navbar-dark bg-dark mb-4">
@@ -38,6 +39,16 @@ const Header = () => {
                     Мои задачи
                   </NavLink>
                 </li>
+                {isAdmin && (
+                  <li className="nav-item">
+                    <NavLink
+                      className="nav-link"
+                      to="/admin"
+                      activeClassName="active">
+                      Админ панель
+                    </NavLink>
+                  </li>
+                )}
               </ul>
               <div className="d-flex">
                 <ul className="navbar-nav me-auto mb-2 mb-md-0">

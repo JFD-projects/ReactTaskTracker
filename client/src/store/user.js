@@ -16,6 +16,7 @@ if (localStorageService.getAccessToken()) {
   initialState.auth = { userId: localStorageService.getUserId() }
   initialState.isLoggedIn = true
   initialState.isLoading = true
+  initialState.isAdmin = localStorageService.getUserIsAdmin()
 }
 
 const userSlice = createSlice({
@@ -28,6 +29,7 @@ const userSlice = createSlice({
     authRequestSuccess: (state, action) => {
       state.auth = { ...action.payload }
       state.isLoggedIn = true
+      state.isAdmin = action.payload?.isAdmin
     },
     authRequestFiled: (state, action) => {
       state.error = action.payload
@@ -50,7 +52,7 @@ export const login = (payload) => {
     try {
       const data = await authService.login({ email, password })
       setTokens(data)
-      dispatch(authRequestSuccess({ userId: data.userId }))
+      dispatch(authRequestSuccess({ userId: data.id, isAdmin: data.isAdmin }))
       history.push('/tasks')
     } catch (error) {
       dispatch(
@@ -94,6 +96,7 @@ export const logOut = () => {
 
 export const getUserLoadingStatus = () => (state) => state.user.isLoading
 export const getIsLoggedIn = () => (state) => state.user.isLoggedIn
+export const getIsAdmin = () => (state) => state.user.isAdmin
 export const getAuthError = () => (state) => state.user.error
 
 export default userReducer

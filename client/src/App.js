@@ -9,6 +9,7 @@ import Main from './pages/main/main'
 import Register from './pages/register/register'
 import Task from './pages/tasks/task'
 import Tasks from './pages/tasks/tasks'
+import Admin from './pages/admin/admin'
 import MainTemplate from './templates/main/mainTemplate'
 import AuthTemplate from './templates/auth/authTemplate'
 import { ToastContainer } from 'react-toastify'
@@ -17,6 +18,7 @@ import AppLoader from './components/hoc/appLoader'
 import history from './utils/history'
 import ProtectedRoute from './components/hoc/protectedRoute'
 import video from './assets/video/video.mp4'
+import AdminRoute from './components/hoc/adminRoute'
 
 function App() {
   return (
@@ -56,6 +58,12 @@ function App() {
                   path="/tasks"
                   component={() => <MainTemplate content={Tasks} />}
                 />
+                <AdminRoute>
+                  <Route
+                    path="/admin"
+                    component={() => <MainTemplate content={Admin} />}
+                  />
+                </AdminRoute>
               </Switch>
             </AppLoader>
           </ProtectedRoute>

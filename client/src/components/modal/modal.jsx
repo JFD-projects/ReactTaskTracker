@@ -8,7 +8,6 @@ const Modal = ({ show, onClose, children }) => {
     if (typeof onClose === 'function') {
       onClose()
     }
-    console.log('onClose')
   }
   const style = {
     display: show ? 'block' : 'none'

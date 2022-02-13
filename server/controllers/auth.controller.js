@@ -60,6 +60,7 @@ exports.signIn = async (req, res) => {
             id: user._id,
             username: user.username,
             email: user.email,
+            isAdmin: user.isAdmin,
             ...tokens
         });
     } catch (e) {
@@ -83,7 +84,6 @@ exports.refreshToken = async (req, res) => {
         }
 
         const user = await User.findOne({_id: data._id});
-        console.log('user', user)
         if (!user) {
             return res.status(401).send({message: "Unauthorized"});
         }

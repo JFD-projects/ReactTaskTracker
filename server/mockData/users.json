@@ -2,6 +2,7 @@
   {
     "name": "Руслан Сколотий",
     "email": "dpruslan@gmail.com",
-    "password": "Qwe123!!!!"
+    "password": "Qwe123!!!!",
+    "isAdmin" : true
   }
 ]

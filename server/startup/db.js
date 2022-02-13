@@ -32,7 +32,6 @@ const generateSimpleEntity = async (data, model) => {
 };
 
 const findUser = (email, users) => {
-    console.log('email', email)
     return users.find((row) => row.email === email)._id;
 };
 const findColumn = (title, columns) => {
@@ -57,9 +56,12 @@ async function setInitialData() {
 
     await clearCollection(models.user)
     const salt = await bcrypt.genSalt(5);
-    const users = await Promise.all(usersMock.map(async obj => ({
-        ...obj, password: await bcrypt.hash(obj.password, salt)
-    })));
+    const users = await Promise.all(
+      usersMock.map(async (obj) => ({
+        ...obj,
+        password: await bcrypt.hash(obj.password, salt),
+      }))
+    );
 
     const usersData = await generateSimpleEntity(
         users,

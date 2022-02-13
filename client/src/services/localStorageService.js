@@ -2,18 +2,21 @@ const TOKEN_KEY = 'jwt-token'
 const REFRESH_KEY = 'jwt-refresh-token'
 const EXPIRES_KEY = 'jwt-expires'
 const USER_ID_KEY = 'jwt-user-id'
+const USER_IS_ADMIN = 'jwt-user-is-admin'
 
 export const setTokens = ({
   refreshToken,
   accessToken,
   expiresIn = 3600,
-  id: userId
+  id: userId,
+  isAdmin
 }) => {
   const expiresDate = new Date().getTime() + expiresIn * 1000
   localStorage.setItem(TOKEN_KEY, accessToken)
   localStorage.setItem(REFRESH_KEY, refreshToken)
   localStorage.setItem(EXPIRES_KEY, expiresDate.toString())
   localStorage.setItem(USER_ID_KEY, userId)
+  localStorage.setItem(USER_IS_ADMIN, isAdmin ? 'true' : 'false')
 }
 
 export const getAccessToken = () => {
@@ -26,6 +29,10 @@ export const getRefreshToken = () => {
 
 export const getUserId = () => {
   return localStorage.getItem(USER_ID_KEY)
+}
+
+export const getUserIsAdmin = () => {
+  return localStorage.getItem(USER_IS_ADMIN) === 'true'
 }
 
 export const getExpireDate = () => {
@@ -45,7 +52,8 @@ const localStorageService = {
   getRefreshToken,
   getExpireDate,
   getUserId,
-  clearTokens
+  clearTokens,
+  getUserIsAdmin
 }
 
 export default localStorageService
