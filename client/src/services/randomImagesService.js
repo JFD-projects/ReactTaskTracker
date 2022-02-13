@@ -8,11 +8,11 @@ const randomImagesService = {
     return await axios.get('https://randomfox.ca/floof/')
   },
   async getRandomDog() {
-    const { url } = await axios.get('https://random.dog/woof.json')
-    if (/.*mp4$/.test(url)) {
+    const { data } = await axios.get('https://random.dog/woof.json')
+    if (/.*mp4$/.test(data.url)) {
       return await randomImagesService.getRandomDog()
     }
-    return { url }
+    return { data }
   }
 }
 
