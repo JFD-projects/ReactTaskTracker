@@ -11,5 +11,7 @@ router.post("/signup", [verifySignUp.checkDuplicateEmail, ...signUpValidations],
 router.post("/signin", controller.signIn);
 router.post("/logout", controller.revokeToken);
 router.post("/refreshToken", [authJwt.verifyRefreshToken], controller.refreshToken);
+router.post("/restorePassword", controller.restorePassword);
+router.post("/setPassword", controller.setPassword);
 
 module.exports = router;

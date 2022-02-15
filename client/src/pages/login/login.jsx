@@ -1,14 +1,18 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import './login.css'
 import * as Yup from 'yup'
 import { Formik, Field, Form } from 'formik'
 import { useDispatch, useSelector } from 'react-redux'
-import { getAuthError, login } from '../../store/user'
+import { clearErrors, getAuthError, login } from '../../store/user'
 import { Link } from 'react-router-dom'
 
 const Login = () => {
   const dispatch = useDispatch()
   const errors = useSelector(getAuthError())
+
+  useEffect(() => {
+    dispatch(clearErrors())
+  }, [])
 
   const signInSchema = Yup.object().shape({
     email: Yup.string().required('Поле обязательное для заполнения'),
@@ -89,6 +93,9 @@ const Login = () => {
               </div>
               <div className="mb-3">
                 <Link to={'/register'}>Регистрация</Link>
+                <Link className="ms-2" to={'/restore-password'}>
+                  Забыли пароль?
+                </Link>
               </div>
             </Form>
           )}

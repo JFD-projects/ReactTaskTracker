@@ -3,6 +3,7 @@
 /**
  * Module dependencies.
  */
+require('dotenv').config()
 const config = require("../config/config.json");
 const app = require("../app");
 const debug = require("debug")("server:server");

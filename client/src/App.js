@@ -5,6 +5,7 @@ import 'bootstrap-icons/font/bootstrap-icons.css'
 import 'bootstrap/dist/js/bootstrap.min.js'
 import './App.css'
 import Login from './pages/login/login'
+import RestorePassword from './pages/restorePassword/restorePassword'
 import Main from './pages/main/main'
 import Register from './pages/register/register'
 import Task from './pages/tasks/task'
@@ -40,6 +41,10 @@ function App() {
           <Route
             path="/register"
             component={() => <AuthTemplate content={Register} />}
+          />
+          <Route
+            path="/restore-password"
+            component={() => <AuthTemplate content={RestorePassword} />}
           />
           <ProtectedRoute>
             <AppLoader>

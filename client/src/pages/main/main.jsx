@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { useArraySlider } from '../../hooks/useArraySlider'
 import imgSpa from '../../assets/images/spa.jpg'
 import imgReact from '../../assets/images/react.jpg'
@@ -9,7 +9,6 @@ import imgMongodb from '../../assets/images/mongodb.jpg'
 import imgExpress from '../../assets/images/express.jpg'
 import imgNode from '../../assets/images/node.jpg'
 import './main.css'
-import randomImagesService from '../../services/randomImagesService'
 
 const Main = () => {
   const [value, start, stop] = useArraySlider(3000, [
@@ -22,20 +21,8 @@ const Main = () => {
     'express',
     'node'
   ])
-  const [randomCatImage, setRandomCatImage] = useState()
-  const [randomFoxImage, setRandomFoxImage] = useState()
-  const [randomDogImage, setRandomDogImage] = useState()
   useEffect(() => {
     const index = start()
-    randomImagesService.getRandomCat().then(({ data }) => {
-      setRandomCatImage(data.file)
-    })
-    randomImagesService.getRandomFox().then(({ data }) => {
-      setRandomFoxImage(data.image)
-    })
-    randomImagesService.getRandomDog().then(({ data }) => {
-      setRandomDogImage(data.url)
-    })
     return () => stop(index)
   }, [])
 
@@ -222,53 +209,6 @@ const Main = () => {
                 написанный на C++.
               </p>
             </div>
-          </div>
-        </div>
-        <h3 className="pb-2 border-bottom pt-4">
-          Котики, собачки и лисички (без них никуда):
-        </h3>
-        <div className="row row-cols-3 py-4">
-          <div className="col text-center">
-            {!randomCatImage && (
-              <div className="spinner-border text-primary" role="status">
-                <span className="visually-hidden">Loading...</span>
-              </div>
-            )}
-            {randomCatImage && (
-              <img
-                src={randomCatImage}
-                className="img-fluid border border-5 rounded-3"
-                alt="Котик"
-              />
-            )}
-          </div>
-          <div className="col text-center">
-            {!randomDogImage && (
-              <div className="spinner-border text-primary" role="status">
-                <span className="visually-hidden">Loading...</span>
-              </div>
-            )}
-            {randomDogImage && (
-              <img
-                src={randomDogImage}
-                className="img-fluid border border-5 rounded-3"
-                alt="Собачка"
-              />
-            )}
-          </div>
-          <div className="text-center">
-            {!randomFoxImage && (
-              <div className="spinner-border text-primary" role="status">
-                <span className="visually-hidden">Loading...</span>
-              </div>
-            )}
-            {randomFoxImage && (
-              <img
-                src={randomFoxImage}
-                className="img-fluid border border-5 rounded-3"
-                alt="Лисички"
-              />
-            )}
           </div>
         </div>
       </div>

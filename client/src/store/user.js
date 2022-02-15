@@ -37,13 +37,29 @@ const userSlice = createSlice({
     userLoggedOut: (state) => {
       state.isLoggedIn = false
       state.auth = null
+    },
+    restorePasswordSuccess: (state, action) => {
+      state.error = null
+    },
+    restorePasswordFiled: (state, action) => {
+      state.error = action.payload
+    },
+    errorsCleared: (state) => {
+      state.error = null
     }
   }
 })
 
 const { reducer: userReducer, actions } = userSlice
-const { authRequested, authRequestSuccess, authRequestFiled, userLoggedOut } =
-  actions
+const {
+  authRequested,
+  authRequestSuccess,
+  authRequestFiled,
+  userLoggedOut,
+  restorePasswordSuccess,
+  restorePasswordFiled,
+  errorsCleared
+} = actions
 
 export const login = (payload) => {
   return async (dispatch) => {
@@ -57,6 +73,35 @@ export const login = (payload) => {
     } catch (error) {
       dispatch(
         authRequestFiled(error?.response?.data?.message || error.message)
+      )
+    }
+  }
+}
+
+export const restorePassword = (payload) => {
+  return async (dispatch) => {
+    const { email } = payload
+    try {
+      await authService.restorePassword({ email })
+    } catch (error) {
+      dispatch(
+        restorePasswordFiled(error?.response?.data?.message || error.message)
+      )
+    }
+  }
+}
+
+export const setPassword = (payload) => {
+  return async (dispatch) => {
+    try {
+      const data = await authService.setPassword(payload)
+      setTokens(data)
+      dispatch(authRequestSuccess({ userId: data.userId }))
+      dispatch(restorePasswordSuccess())
+      history.push('/tasks')
+    } catch (error) {
+      dispatch(
+        restorePasswordFiled(error?.response?.data?.message || error.message)
       )
     }
   }
@@ -92,6 +137,10 @@ export const logOut = () => {
       history.push('/')
     }
   }
+}
+
+export const clearErrors = () => {
+  return async (dispatch) => dispatch(errorsCleared())
 }
 
 export const getUserLoadingStatus = () => (state) => state.user.isLoading

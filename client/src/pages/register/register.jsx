@@ -1,14 +1,18 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import './register.css'
 import { Formik, Field, Form } from 'formik'
 import * as Yup from 'yup'
 import { useDispatch, useSelector } from 'react-redux'
-import { getAuthError, signUp } from '../../store/user'
+import { clearErrors, getAuthError, signUp } from '../../store/user'
 import { Link } from 'react-router-dom'
 
 const Register = () => {
   const errors = useSelector(getAuthError())
   const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(clearErrors())
+  }, [])
 
   const onSubmitHandler = async (values) => {
     dispatch(signUp(values))
@@ -101,6 +105,9 @@ const Register = () => {
               </div>
               <div className="mb-3">
                 <Link to={'/login'}>Авторизация</Link>
+                <Link className="ms-2" to={'/restore-password'}>
+                  Забыли пароль?
+                </Link>
               </div>
             </Form>
           )}

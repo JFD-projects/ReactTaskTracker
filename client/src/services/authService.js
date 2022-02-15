@@ -51,6 +51,14 @@ const authService = {
       refreshToken: localStorageService.getRefreshToken()
     })
     return data
+  },
+  restorePassword: async (payload) => {
+    const { data } = await httpAuth.post('auth/restorePassword', payload)
+    return data
+  },
+  setPassword: async (payload) => {
+    const { data } = await httpAuth.post('auth/setPassword', payload)
+    return data
   }
 }
 export default authService

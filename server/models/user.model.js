@@ -9,6 +9,7 @@ module.exports = model(
       email: { type: String, required: true },
       password: { type: String, required: true, select: false },
       isAdmin: { type: Boolean },
+      restoreHash: { type: String },
     },
     { timestamps: true }
   )
